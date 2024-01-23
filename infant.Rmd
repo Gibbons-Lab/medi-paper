@@ -1,0 +1,180 @@
+# Food genome in infant metagenomes
+
+We will start by reading in the food abundances and metadata.
+
+```{r}
+library(data.table)
+
+options(scipen=3)
+
+food_abundances <- fread("infants/data/food_abundance.csv")
+food_abundances[, "ncbi_taxonomy_id" := as.character(ncbi_taxonomy_id)]
+food_contents <- fread("infants/data/food_content.csv")
+meta <- fread("/proj/gibbons/2022_infant_data_st_louis/data/PRJNA473126.tsv")
+meta <- meta[, .(
+  Run, Ethnicity, host_age_days_at_time_of_survey, 
+  host_age_days, host_antimicrobial_in_last_7days, 
+  host_birthweight_g, host_del_route, Host_Diet, 
+  host_family, host_sex, Bases, host_subject_id
+)]
+meta[, "age_group" := Hmisc::cut2(round(host_age_days), g=8, digits=1)]
+meta[, "host_age_months" := host_age_days/365*12]
+foods <- strsplit(meta$Host_Diet, "\\, ", fixed=T)
+meta[, "feeding" := sapply(foods, `[[`, 1)]
+
+foods <- meta[, unlist(foods) |> unique()]
+food_abundances <- food_abundances[meta, on=c(sample_id="Run")]
+food_contents <- food_contents[meta, on=c(sample_id="Run")]
+solid_foods <- totals[grepl("Fruits|Meat|Cereal|Sweets", Host_Diet), .(onset=min(host_age_days)), by="host_subject_id"]
+```
+
+```{r, fig.width=6, fig.height=4}
+library(ggplot2)
+theme_minimal() |> theme_set()
+
+shannon <- function(x) {
+  p <- x/sum(x)
+  return(-sum(p*log(p)))
+}
+
+totals <- food_abundances[!is.na(reads), .(
+  reads=sum(reads, na.rm=T),
+  alpha_diversity=shannon(reads),
+  cereal_reads=sum(reads[food_group == "Cereals and cereal products"], na.rm=T),
+  cow_reads=sum(reads[food_subgroup == "Bovines"], na.rm=T),
+  fruit_veg_reads=sum(reads[food_group %in% c("Vegetables", "Fruits")]),
+  animal_reads=sum(reads[food_group %in% c("Aquatic foods", "Animal foods")]),
+  total_reads=max(total_reads, na.rm=T),
+  bac=mean(bacteria_reads, na.rm=T),
+  human=mean(human_reads, na.rm=T)), 
+  by=c("sample_id", names(meta)[-1])
+]
+totals[, "formula" := grepl("Formula", Host_Diet)]
+totals[, "cereals" := grepl("Cereal", Host_Diet)]
+totals[, "cereals" := grepl("Cereal", Host_Diet)]
+totals[, "fruit_veg" := grepl("Fruits/Vegetables", Host_Diet)]
+totals[, "animals" := grepl("Meat/Fish/Eggs", Host_Diet)]
+ggplot(totals[!is.na(total_reads)]) +
+  annotate(geom = "rect", xmin=solid_foods[, quantile(onset, 0.25)], xmax=solid_foods[, quantile(onset, 0.75)], ymin=0, ymax=Inf, fill="black", color=NA, alpha=0.15) +
+  aes(x=host_age_days, y=(reads + 1)/(total_reads + 1), color=bac/total_reads < 0.95) +
+  scale_color_manual(values=c("black", "tomato")) +
+  geom_point() +
+  stat_smooth(data=totals[host_age_days >3], method="gam", col="blue") +
+  labs(x="infant age [days]", y="fraction of food reads [reads + 1/total]") +
+  scale_y_log10(label = scales::percent_format(scale=100)) + 
+  guides(color=FALSE)
+  
+ggsave("figures/infant_total_food.pdf", dpi=300, width=6, height=4)
+```
+
+Let's test if there is a significant effect of age on food reads in a repeated samples set up.
+
+```{r}
+library(lmerTest)
+
+fit <- lmer(
+  log10((reads + 1)/total_reads) ~                                 # log-relative abundance of foods 
+      log10((bac+1)/total_reads) + host_del_route +                    # correct for bacterial reads and delivery route
+      host_age_months + (1 + host_age_months | host_subject_id),   # random effects for individuals
+  data=totals
+)
+summary(fit)
+```
+
+
+```{r, fig.width=4, fig.height=3}
+macros <- c("Proteins", "Carbohydrate", "Fiber (dietary)", "Fat", "Energy", "Fatty acids") 
+
+adults <- fread("ihmp/data/food_content.csv")[name %chin% macros]
+cohorts <- rbind(food_contents[name %chin% macros][, "cohort" := "infants"], adults[, "cohort" := "adults"], fill=T)
+cohorts[, t.test(abundance ~ cohort, data=.SD), by="name"]
+ggplot(cohorts[name != "Energy"]) +
+  aes(x=name, y=abundance/1000, fill=cohort) +
+  geom_boxplot(position="dodge") + 
+  labs(x="", y="abundance/portion [g/100g]") +
+  theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+ggsave("figures/macros.pdf", width=4, height=3)
+```
+
+```{r, fig.width=2, fig.height=3}
+cor.test(~ abundance + host_age_days, food_contents[name == "Energy"])
+ggplot(cohorts[name == "Energy"]) +
+  aes(x=cohort, y=abundance, fill=cohort) +
+  geom_boxplot() + 
+  labs(x="", y="energy/portion [kcal/100g]") +
+  theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+ggsave("figures/energy.pdf", width=2, height=3)
+```
+
+```{r, fig.width=6, fig.height=2}
+detected <- rbind(
+  totals[, .(detected=sum(reads > 0), n=.N), by="age_group"],
+  data.table(age_group="adult", detected=adults[, uniqueN(sample_id)], n=365)
+)
+fisher.test(totals[, table(reads > 0, age_group)], simulate.p.value = T)
+
+ggplot(detected, aes(x=age_group, y=detected/n)) +
+  geom_bar(stat="identity", fill="black") +
+  labs(x="age quantile [days]", y="food prevalence") +
+  scale_y_continuous(labels=scales::percent_format(), limits=c(0, 1))
+ggsave("figures/food_prevalence.pdf", width=6, height=2)
+```
+
+```{r}
+ggplot(totals, aes(x=host_age_days, y=bac/total_reads, color=host_del_route)) +
+  geom_point() +
+  stat_smooth(method="gam") +
+  labs(x="infant age [days]", y="bacterial reads [%total]", color="delivery route") +
+  scale_y_log10()
+ggsave("figures/bac_reads.png", dpi=300)
+```
+
+```{r, fig.width=3, fig.height=4}
+
+tests <- list(
+  `fruits and vegetables` = list(group="fruit_veg", ex=expression(fruit_veg_reads)),
+  `cereals` = list(group="cereals", ex=expression(cereal_reads))
+)
+
+tables <- list()
+results <- list()
+groups <- c("not consumed", "consumed")
+for (i in 1:length(tests)) {
+  name <- names(tests)[i]
+  vals <- tests[[i]]
+  dt <- totals[!is.na(total_reads), .(abundance=eval(vals$ex), group=groups[.SD[[vals$group]] + 1], total_reads)]
+  ns <- dt[, .N, by="group"] |> setkey(group)
+  dt <- dt[ns[group, N] >= 10]
+  dt[, group := factor(group, levels=groups)]
+  dt[, "relative" := (abundance + 1)/(total_reads + 1)]
+  dt[, "item" := name]
+  plots[[name]] <- ggplot(dt) + aes(x=group, y=log10(relative)) + 
+    geom_jitter(width=0.3) + 
+    geom_boxplot(width=0.1) + 
+    stat_smooth(aes(group=1), method="lm") + 
+    labs(title=name, x="consumption frequency [servings/day]", y="abundance")
+  print(name)
+  abmod <- lm(log10(relative) ~ as.numeric(group), data=dt)
+  premod <- glm((abundance > 0) ~ as.numeric(group), data=dt)
+  tables[[name]] <- dt
+  results[[name]] <- dt[, .(n=.N, log_rpm=mean(log10(relative*1e6)), sd=sd(log10(relative)), detected=sum(abundance > 0), item=name), by="group"]
+  results[[name]][, "p_abundance" := summary(abmod)$coefficients[2, 4]]
+  results[[name]][, "p_prevalence" := summary(premod)$coefficients[2, 4]]
+}
+```
+
+```{r, fig.width=2, fig.height=9}
+r <- rbindlist(results)
+ta <- rbindlist(tables)
+ggplot(r) +
+  aes(x=group, y=log_rpm) +
+  geom_jitter(data=ta, aes(y=log10(relative*1e6)), stroke=0, size=0.5, width=0.3) +
+  #geom_boxplot(outlier.color="NA") +
+  geom_pointrange(aes(ymin=log_rpm-sd, ymax=log_rpm+sd), shape=21, fill="white") +
+  geom_text(data=unique(r, by="item"), aes(x=0, y=5, label=sprintf("p[t-test]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
+  facet_wrap(~ item, ncol=1) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(x="", y="log-relative abundance [log₁₀RPM]") +
+  guides(color=F)
+ggsave("figures/infant_foods.png", width=2, height=9, dpi=300)
+```

@@ -1,0 +1,69 @@
+# Creating artificial ground truth data
+
+Here we will sample some metagenomes with known composition. Those will consist of 90% of a representative food-free sample containing bacteria and human reads
+and of 10% of stageered abundance food reads.
+
+## Building up a representative sample
+
+First we will calculate the mean abundances from the a healthy cohort taken from the iHMP project.
+
+```{r}
+library(data.table)
+
+present <- list.files("simulated/data/genomes", ".fna.gz") |> strsplit(".fna.gz", fixed=T) |> unlist() |> as.numeric()
+
+counts <- fread("ihmp/data/S_counts.csv")[grepl("k__Bacteria|s__Homo sapiens", lineage)]
+mock <- counts[, .(reads=mean(new_est_reads)), by=c("name", "taxonomy_id", "lineage", "taxid_lineage")][reads > 100 & taxonomy_id %in% present]
+mock[, "relative_abundance" := reads / sum(reads)]
+mock[, "type" := "background"]
+mock[, uniqueN(name)]
+```
+
+This gives us our reference sample. Now we will start generating random samples by adding in food reads to the data.
+
+First we read in our manifest of covered foods.
+
+```{r}
+manifest <- fread("db/data/manifest.csv")
+foods <- fread("db/data/dbs/food_matches.csv") |> unique(by = c("matched_taxid", "rank"))
+foods <- foods[manifest, on="matched_taxid"][rank == "species"]
+foods
+```
+
+```{r}
+set.seed(42)
+
+FOOD_FRAC <- 0.1
+N_FOODS <- 10
+DEPTH <- 1e7
+N_NEGATIVE <- 4
+
+mock_sample <- copy(mock)[, .(id=taxonomy_id, relative_abundance=reads / sum(reads), sample_id="negative", file=paste0(taxonomy_id, ".fna.gz"), type)]
+samples <- list()
+for (i in 1:16) {
+  food_sample <- foods[sample.int(nrow(foods), N_FOODS), ] |> copy()
+  food_sample[, "taxon" := .SD[[rank]], by="matched_taxid"]
+  food_sample <- food_sample[, .(id=matched_taxid, reads=exp(1:N_FOODS), file=basename(filename))]
+  food_sample[, "relative_abundance" := reads / sum(reads) * FOOD_FRAC]
+  food_sample[, "type" := "food"]
+  sa <- rbind(
+    mock_sample[, .(id, relative_abundance = relative_abundance * (1 - FOOD_FRAC), file, type)], 
+    food_sample[, .(id, relative_abundance, file, type)]
+  )
+  sa[, "sample_id" := paste0("positive_", i)]
+  samples[[i]] <- sa
+}
+
+for (i in 1:N_NEGATIVE) {
+  neg <- copy(mock_sample)
+  neg$sample_id <- paste0("negative_", i)
+  samples[[length(samples) + i]] <- neg
+}
+samples <- rbindlist(samples, use.names = T)
+samples[, "depth" := DEPTH]
+```
+
+```{r}
+head(samples)
+fwrite(samples, "simulated/data/manifest.csv")
+```

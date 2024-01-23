@@ -1,0 +1,159 @@
+# Description of the database
+
+Let's start by reading the annotations.
+
+```{r}
+library(data.table)
+
+seqs <- fread("db/data/manifest.csv")
+seqs[phylum == "", phylum := paste0("[", class, "]")]
+seqs[, "taxa" := basename(filename)]
+seqs[, sum(seqlength)/1e9]
+seqs[, table(db)]
+```
+
+And have a look at the genome sizes.
+
+```{r, fig.width=6, fig.height=3}
+library(ggplot2)
+theme_minimal() |> theme_set()
+
+cn <- seqs[, .(N=.N, bps=sum(as.double(seqlength))), by=c("kingdom", "phylum", "db", "rank")]
+
+ggplot(cn) +
+  aes(x=phylum, y=bps, fill=rank) + 
+  geom_bar(stat="identity", position="dodge", stroke=1, color="black") +
+  facet_wrap(~ db) +
+  scale_y_log10() +
+  theme(axis.text.x = element_text(angle = 45, vjust=1, hjust=1)) +
+  labs(x="", y="assembly size [bps]", fill="taxonomic rank")
+ggsave("figures/db_size_summary.png", dpi=300)
+```
+
+```{r, fig.width=6, fig.height=3}
+options(scipen=3)
+
+ggplot(seqs) +
+  aes(x=phylum, y=seqlength, color=rank) + 
+  geom_jitter(width=0.4, stroke=0) +
+  geom_boxplot(aes(group=phylum), color="black", width=0.2, outlier.color=NA) +
+  facet_wrap(~ db) +
+  scale_y_log10() +
+  theme(axis.text.x = element_text(angle = 45, vjust=1, hjust=1)) +
+  labs(x="", y="assembly size [bps]", color="taxonomic rank")
+ggsave("figures/db_size_bps.pdf", width=6, height=3)
+```
+
+And the number of sequences.
+
+```{r, fig.width=6, fig.height=3}
+ggplot(cn) +
+  aes(x=phylum, y=N, fill=rank) + 
+  geom_bar(stat="identity", position="dodge", color="black") +
+  facet_wrap(~ db) +
+  theme(axis.text.x = element_text(angle = 45, vjust=1, hjust=1)) +
+  scale_y_log10() +
+  labs(x="", y="no. assemblies", fill="taxonomic rank")
+ggsave("figures/db_size_n.pdf", width=6, height=3)
+```
+
+# Food taxonomy
+
+Let's build up out food taxonomy and add in some metadata. We start by reading the food contents.
+
+```{r}
+contents <- fread("db/data/dbs/food_contents.csv.gz")[source_type == "Nutrient"]
+contents[name=="Energy"]
+```
+
+Now we will start summarizing them over individual organisms.
+
+```{r}
+macros <- c("Proteins", "Carbohydrate", "Fiber (dietary)", "Fat") 
+
+broad_prepration <- function (classes) {
+  allpreps <- paste0(unique(classes), collapse=",")
+  if (grepl("raw", allpreps)) {
+    return("raw")
+  }
+  if (grepl("cooked", allpreps)) {
+    return("cooked")
+  }
+  if (grepl("oil", allpreps)) {
+    return("oil")
+  }
+  return("other")
+}
+
+collapsed <- contents[, .(
+  amount=mean(standard_content, na.rm=T), 
+  amount_sd=sd(standard_content, na.rm=T),
+  preparation=broad_prepration(preparation_type)
+  ), 
+  by=c("compound_id", "matched_taxid", "name", "food_group", 
+       "food_subgroup", "phylum", "genus", "species", "db", "rank")
+]
+collapsed <- collapsed[seqs, on="matched_taxid", nomatch=0]
+collapsed[name %chin% macros, "relative" := amount / sum(amount), by="matched_taxid"]
+uniq_foods <- unique(collapsed, by="matched_taxid")
+uniq_foods <- cbind(uniq_foods$taxa, uniq_foods)
+collapsed
+```
+
+Now we get the mash ANI estimates and convert them to a distance matrix.
+
+```{r}
+ani <- fread("db/data/mash_ani.csv")
+taxa <- basename(names(ani))
+ani <- as.matrix(ani)
+rownames(ani) <- colnames(ani) <- taxa
+D <- as.dist(1 - ani)
+```
+
+And we build the UPGMA tree.
+
+```{r}
+tree <- phangorn::upgma(D)
+```
+
+Now let's start to visualize.
+
+```{r, fig.with=16, fig.height=16}
+library(ggtree)
+library(ggtreeExtra)
+
+p <- ggtree(tree, layout="fan", open.angle=20) %<+% cbind(seqs$taxa, seqs) |> rotate_tree(90)
+p <- p + geom_tippoint(aes(color=phylum))
+```
+
+Let's start to annotate with some more things.
+
+```{r, fig.width=18, fig.height=18}
+p + 
+  geom_fruit(data=uniq_foods, aes(y=taxa, x=0, shape=preparation), geom="geom_point", size=1.1) +
+  geom_fruit(
+    data=collapsed[name %chin% macros], 
+    aes(y=taxa, x=name, fill=name, alpha=relative),
+    color="gray50",
+    geom="geom_tile",
+    pwidth=0.07
+  ) +
+  geom_fruit(
+    data=collapsed[name == "Energy"],
+    aes(y=taxa, x=amount),
+    fill="black",
+    geom=geom_bar,
+    stat="identity",
+    position = position_identityx(),
+    pwidth=0.2,
+    axis.params=list(
+      axis       = "x",
+      text.size  = 3,
+      hjust      = 0,
+      vjust      = 0.5,
+      nbreak     = 4,
+    ),
+    grid.params=list()
+  )
+ggsave("figures/food_tree.pdf", width=18, height=18)
+```

@@ -1,0 +1,183 @@
+---
+title: "Immigration data"
+output: html_notebook
+---
+
+
+```{r}
+library(data.table)
+library(ggplot2)
+library(magrittr)
+theme_minimal() %>% theme_set()
+```
+
+```{r}
+sample_meta <- fread("data/PRJEB28687_metadata.tsv")[, .(Run, Alias)]
+sample_meta[, ID := gsub("wgs.", "", Alias) %>% gsub("_", ".", .)]
+sample_map <- fread("https://github.com/knights-lab/IMP_analyses/raw/master/data/map.txt")
+sample_meta <- sample_map[sample_meta, on=c(`#SampleID` = "ID")]
+sample_meta[, "years" := Years.in.US]
+sample_meta[Sample.Group == "Control", "years" := Age]
+sample_meta[Sample.Group == "HmongThai", "years" := 0]
+```
+
+```{r}
+diet_nutrients <- fread("https://github.com/knights-lab/IMP_analyses/raw/master/data/food/nutrients.txt")
+diet_nutrients <- diet_nutrients[sample_meta, on=c(Sample.ID = "#SampleID"), allow.cartesian=T]
+foods <- fread("data/mgx/food_abundances.csv")[sample_id %chin% sample_meta$Run]
+content <- fread("data/mgx/food_contents.csv")[sample_id %chin% sample_meta$Run]
+```
+
+
+Let's look at the global correlations:
+
+```{r}
+dt2mat <- function(dt, x, y, value) {
+  mat <- dcast(dt, as.formula(sprintf("%s ~ %s", x, y)), value.var = value, fun.aggregate = sum, fill=0)
+  ids <- mat[[x]]
+  mat[[x]] <- NULL
+  mat <- as.matrix(mat)
+  rownames(mat) <- ids
+  return(mat)
+}
+
+fmat <- dt2mat(foods, "sample_id", "wikipedia_id", "reads")
+cmat <- dt2mat(content[source_type == "Compound"], "sample_id", "name", "abundance") / 100000
+nmat <- dt2mat(content[source_type == "Nutrient"], "sample_id", "name", "abundance") / 100000
+
+food_groups <- foods[, .(abundance=sum(fraction), reads=sum(reads)), by=c("sample_id", "food_group")]
+fg_mat <- dt2mat(food_groups, "sample_id", "food_group", "reads")
+
+genera <- fread("data/mgx/G_counts.csv")[sample %in% sample_meta$Run]
+gmat <- dt2mat(genera[d == "Bacteria"], "sample", "g", "reads")
+
+dmat <- diet_nutrients[, 9:54, with = F] %>% as.matrix()
+rownames(dmat) <- diet_nutrients$Run
+```
+
+Now we can calculate the correaltions between diet and food groups:
+
+```{r, fig.width=16, fig.height=8}
+clr <- function(M) {
+  L <- log(M + 0.5)
+  return(L - rowMeans(L))
+}
+
+library(RColorBrewer)
+
+C <- cor(fg_mat / rowSums(fmat), dmat, method="spearman")
+C[is.na(C)] <- 0
+pheatmap::pheatmap(C, center=0, rev(brewer.pal(16, "RdBu")))
+```
+
+Or diet and nutrients:
+
+```{r, fig.width=16, fig.height=8}
+C <- cor(nmat,  dmat, method="spearman")
+C[is.na(C)] <- 0
+pheatmap::pheatmap(C, center=0, rev(brewer.pal(256, "RdBu")))
+```
+
+Let's look at metadata
+
+```{r}
+library(phyloseq)
+
+mat2ps <- function(mat, meta) {
+  sdata <- as.data.frame(meta)
+  rownames(sdata) <- meta$Run
+  tax <- matrix(colnames(mat), ncol=1)
+  colnames(tax) <- "taxon"
+  rownames(tax) <- tax[, 1]
+  
+  return(phyloseq(otu_table(mat, taxa_are_rows = FALSE), tax_table(tax), sample_data(sdata)))
+}
+```
+
+For diet
+
+```{r}
+library(vegan)
+
+ps <- mat2ps(clr(dmat), sample_meta)
+ord <- ps %>% ordinate(method="PCoA", distance="euclidean")
+plot_ordination(ps, ord, color = "Sample.Group")
+plot(ord$vectors[, "Axis.1"], sample_meta$years)
+
+adonis(dmat ~ Sample.Group, data = sample_meta)
+```
+For predicted:
+
+```{r}
+ps <- mat2ps(clr(cmat[, !duplicated(gsub("'", "", colnames(cmat)))]), sample_meta)
+ord <- ps %>% ordinate(method="PCoA", distance="euclidean")
+plot_ordination(ps, ord, color = "Sample.Group")
+plot(ord$vectors[, "Axis.1"], sample_meta$years)
+
+adonis(cmat ~ Sample.Group, data = sample_meta)
+adonis(clr(cmat) ~ Sample.Group, data = sample_meta, method="euclidean")
+```
+
+For food groups
+
+```{r}
+ps <- mat2ps(fg_mat, sample_meta)
+ord <- rarefy_even_depth(ps) %>% ordinate(method="PCoA", distance="bray")
+plot_ordination(ps, ord, color = "Sample.Group")
+plot(ord$vectors[, "Axis.1"], sample_meta$years)
+
+fg_rare <- rarefy_even_depth(ps) %>% otu_table()
+adonis(fg_rare ~ Sample.Group, data = sample_meta)
+```
+
+For genera
+
+```{r}
+ps <- mat2ps(gmat, sample_meta)
+ord <- rarefy_even_depth(ps, 100000) %>% ordinate(method="PCoA", distance="bray")
+plot_ordination(ps, ord, color = "Sample.Group")
+plot(ord$vectors[, "Axis.1"], sample_meta$years)
+
+g_rare <- rarefy_even_depth(ps, 100000) %>% otu_table()
+adonis(g_rare ~ Sample.Group, data = sample_meta)
+```
+
+Relationship between gut microbiota and diet data
+
+Real diet
+
+```{r}
+library(ape)
+library(vegan)
+
+gd <- vegdist(g_rare, "bray")
+dd <- vegdist(dmat, "bray")
+ggplot(data.table(x = gd, y = dd), aes(x=x, y=y)) + 
+  geom_point(alpha=0.5) + stat_smooth(method="lm") + 
+  labs(x = "genus distances [Bray]", y="diet distances [Bray]")
+mantel.test(as.matrix(gd), as.matrix(dd))
+```
+
+Predicted food groups:
+
+```{r}
+library(ape)
+library(vegan)
+
+gd <- vegdist(g_rare, "bray")
+fgd <- vegdist(fg_rare, "bray")
+ggplot(data.table(x = gd, y = fgd), aes(x=x, y=y)) + 
+  geom_point(alpha=0.5) + stat_smooth(method="lm") + 
+  labs(x = "genus distances [Bray]", y="predicted food group distances [Bray]")
+mantel.test(as.matrix(gd), as.matrix(fgd))
+```
+
+```{r}
+gd <- vegdist(g_rare, "bray")
+cd <- vegdist(cmat, "bray")
+ggplot(data.table(x = gd, y = cd), aes(x=x, y=y)) + 
+  geom_point(alpha=0.5) + stat_smooth(method="lm") + 
+  labs(x = "genus distances [Bray]", y="predicted food components [Bray]")
+mantel.test(as.matrix(gd), as.matrix(cd))
+ggsave("figures/genera_vs_components.pdf", width=4, height=4)
+```

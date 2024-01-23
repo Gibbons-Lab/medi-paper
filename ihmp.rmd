@@ -1,0 +1,104 @@
+---
+title: "iHMP"
+output: html_notebook
+---
+
+```{r}
+library(data.table)
+library(magrittr)
+library(ggplot2)
+theme_set(theme_minimal())
+
+metadata <- fread("ihmp/data/ibdmdb_healthy.csv")
+sra_data <- fread("ihmp/data/ibdmd_healthy_runtable.tsv")[, .(Run, `Library Name`)]
+sra_data[, "External ID" := tstrsplit(`Library Name`, "_MGX")[[1]]]
+metadata <- metadata[sra_data, on="External ID", nomatch=0]
+metadata
+```
+
+```{r}
+foods <- fread("ihmp/data/food_abundance.csv")
+foods
+
+contents <- fread("ihmp/data/food_content.csv")
+contents
+```
+
+```{r}
+tests <- list(
+  vegetables = list(group="Vegetables (salad, tomatoes, onions, greens, carrots, peppers, green beans, etc)", ex=expression(food_group == "Vegetables")),
+  fruits = list(group="Fruits (no juice) (Apples, raisins, bananas, oranges, strawberries, blueberries", ex=expression(food_group == "Fruits")),
+  beans = list(group="Beans (tofu, soy, soy burgers, lentils, Mexican beans, lima beans etc)", ex=expression(food_subgroup == "Beans")),
+  `white meat` = list(group="White meat (chicken, turkey, etc.)", ex=expression(food_subgroup == "Poultry")),
+  shellfish = list(group="Shellfish (shrimp, lobster, scallops, etc.)", ex=expression(food_subgroup %chin% c("Mollusks", "Crustaceans"))),
+  fish = list(group="Fish (fish nuggets, breaded fish, fish cakes, salmon, tuna, etc.)", ex=expression(food_subgroup == "Fishes")),
+  `red meat` = list(group="Red meat (beef, hamburger, pork, lamb)", ex=expression(food_subgroup %chin% c("Swine", "Bovines", "Caprae")))
+)
+```
+
+
+
+```{r, fig.width=4, fig.height=3}
+library(patchwork)
+
+tables <- list()
+
+freqs <- c(
+  `No, I did not consume these products in the last 7 days` = 0,
+  `Within the past 4 to 7 days` = 1/5.5,
+  `Within the past 2 to 3 days` = 1/2.5,
+  `Yesterday, 1 to 2 times` = 1.5,                                
+  `Yesterday, 3 or more times` = 3                              
+)
+
+results <- list()
+plots <- list()
+merged <- metadata[foods, on=c(`Run` = "sample_id")]
+for (i in 1:length(tests)) {
+  name <- names(tests)[i]
+  vals <- tests[[i]]
+  dt <- merged[, .(abundance=sum(reads[eval(vals$ex)]), group=.SD[[vals$group]][1], total_reads=total_reads[1]), by="External ID"]
+  ns <- dt[, .N, by="group"] |> setkey(group)
+  dt <- dt[group %chin% names(freqs) & ns[group, N] >= 10]
+  dt[, "frequency" := freqs[group]]
+  dt[, group := factor(group, levels=names(freqs)[names(freqs) %in% group])]
+  dt[, "relative" := (abundance + 1)/(total_reads + 1)]
+  dt[, "item" := name]
+  plots[[name]] <- ggplot(dt) + aes(x=group, y=log10(relative)) + 
+    geom_jitter(width=0.3) + 
+    geom_boxplot(width=0.1) + 
+    stat_smooth(aes(group=1), method="lm") + 
+    labs(title=name, x="consumption frequency [servings/day]", y="abundance")
+  print(name)
+  abmod <- lm(log10(relative) ~ frequency, data=dt)
+  premod <- glm((abundance > 0) ~ frequency, data=dt)
+  tables[[name]] <- dt
+  results[[name]] <- dt[, .(n=.N, relative=mean(log10(relative*1e6)), sd=sd(log10(relative)), detected=sum(abundance > 0), item=name), by="group"]
+  results[[name]][, "p_abundance" := summary(abmod)$coefficients[2, 4]]
+  results[[name]][, "p_prevalence" := summary(premod)$coefficients[2, 4]]
+}
+```
+
+```{r, fig.width=3, fig.height=11}
+r <- rbindlist(results)
+ta <- rbindlist(tables)
+ggplot(r) +
+  aes(x=group, y=relative) +
+  geom_jitter(data=ta, aes(y=log10(relative*1e6)), stroke=0, size=0.5, width=0.3) +
+  #geom_boxplot(outlier.color="NA") +
+  geom_pointrange(aes(ymin=relative-sd, ymax=relative+sd), shape=21, fill="white") +
+  geom_text(data=unique(r, by="item"), aes(x=0, y=3, label=sprintf("p[t-test]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
+  facet_wrap(~ item, ncol=2) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(x="", y="log-relative abundance [log₁₀RPM]") +
+  guides(color=F)
+ggsave("figures/ihmp_foods.png", width=3, height=11, dpi=300)
+```
+
+
+```{r, fig.width=5, fig.height=3}
+rare <- foods[, .(n=sum(reads > 0), reads=sum(reads), total_reads=max(total_reads)), by="sample_id"]
+ggplot(rare[n>0], aes(x=total_reads, y=reads, color=total_reads)) + geom_point() + stat_smooth(method="lm", color="tomato") +
+  labs(x="#reads mapped to food", y="#observed food items", color="library size") + scale_x_log10() + scale_y_log10()
+ggsave("figures/food_reads.pdf", width=5, height=3)
+``` 
