@@ -5,11 +5,18 @@ Let's start by reading the annotations.
 ```{r}
 library(data.table)
 
-seqs <- fread("db/data/manifest.csv")
+seqs <- fread("/proj/gibbons/refs/k2_foods_202306/manifest.csv")
 seqs[phylum == "", phylum := paste0("[", class, "]")]
 seqs[, "taxa" := basename(filename)]
 seqs[, sum(seqlength)/1e9]
-seqs[, table(db)]
+seqs[, table(db, rank)]
+```
+
+And let's look at the matched foods:
+
+```{r}
+foods <- fread("db/data/dbs/food_matches.csv")[matched_taxid %in% seqs$matched_taxid]
+foods[, table(db)]
 ```
 
 And have a look at the genome sizes.
@@ -107,7 +114,7 @@ ani <- fread("db/data/mash_ani.csv")
 taxa <- basename(names(ani))
 ani <- as.matrix(ani)
 rownames(ani) <- colnames(ani) <- taxa
-D <- as.dist(1 - ani)
+D <- as.dist(1 - ani[seqs$taxa, seqs$taxa])
 ```
 
 And we build the UPGMA tree.
@@ -156,4 +163,18 @@ p +
     grid.params=list()
   )
 ggsave("figures/food_tree.pdf", width=18, height=18)
+```
+
+Association with nutrients:
+
+```{r}
+library(vegan)
+
+for (m in macros) {
+  print(m)
+  df <- collapsed[name == m] |> as("data.frame")
+  a <- ani[df$taxa, df$taxa]
+  p <- adonis2(dist(1 - a) ~ amount, data=df)
+  print(p)
+}
 ```

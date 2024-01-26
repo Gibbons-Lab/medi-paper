@@ -10,10 +10,12 @@ First we will calculate the mean abundances from the a healthy cohort taken from
 ```{r}
 library(data.table)
 
+cont <- fread("/proj/gibbons/refs/k2_foods_202306/taxids.txt")$taxid
+
 present <- list.files("simulated/data/genomes", ".fna.gz") |> strsplit(".fna.gz", fixed=T) |> unlist() |> as.numeric()
 
 counts <- fread("ihmp/data/S_counts.csv")[grepl("k__Bacteria|s__Homo sapiens", lineage)]
-mock <- counts[, .(reads=mean(new_est_reads)), by=c("name", "taxonomy_id", "lineage", "taxid_lineage")][reads > 100 & taxonomy_id %in% present]
+mock <- counts[, .(reads=mean(new_est_reads)), by=c("name", "taxonomy_id", "lineage", "taxid_lineage")][reads > 100 & taxonomy_id %in% present & taxonomy_id %in% cont]
 mock[, "relative_abundance" := reads / sum(reads)]
 mock[, "type" := "background"]
 mock[, uniqueN(name)]
@@ -26,7 +28,7 @@ First we read in our manifest of covered foods.
 ```{r}
 manifest <- fread("db/data/manifest.csv")
 foods <- fread("db/data/dbs/food_matches.csv") |> unique(by = c("matched_taxid", "rank"))
-foods <- foods[manifest, on="matched_taxid"][rank == "species"]
+foods <- foods[manifest, on="matched_taxid"][rank == "species"][matched_taxid %in% cont]
 foods
 ```
 
@@ -43,7 +45,7 @@ samples <- list()
 for (i in 1:16) {
   food_sample <- foods[sample.int(nrow(foods), N_FOODS), ] |> copy()
   food_sample[, "taxon" := .SD[[rank]], by="matched_taxid"]
-  food_sample <- food_sample[, .(id=matched_taxid, reads=exp(1:N_FOODS), file=basename(filename))]
+  food_sample <- food_sample[, .(id=matched_taxid, reads=4^(1:N_FOODS), file=basename(filename))]
   food_sample[, "relative_abundance" := reads / sum(reads) * FOOD_FRAC]
   food_sample[, "type" := "food"]
   sa <- rbind(

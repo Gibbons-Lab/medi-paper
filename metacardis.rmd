@@ -87,31 +87,39 @@ Heatmap(
 ```
 
 ```{r, fig.width=10, fig.height=10}
-groups <- HeatmapAnnotation(group=sample_data(content_ps)$Status, which="row", col=list(group=c(HC275="white", MMC269="orange", UMCC222="tomato")))
+groups <- HeatmapAnnotation(group=sample_data(content_ps)$Status, which="col", col=list(group=c(HC275="white", MMC269="orange", UMCC222="tomato")))
 anns <- unique(contents, by="id") |> setkey(id)
-com_groups <- HeatmapAnnotation(mass = anns[colnames(abund), monomer_mass], na_col="white")
+com_groups <- HeatmapAnnotation(
+  mass = anns[colnames(abund), monomer_mass], 
+  na_col="white", 
+  which="row",
+  col=list(mass = circlize::colorRamp2(c(0, 1800), c("white", "darkblue"))))
 
 rm <- colMeans(counts)
 sig <- abund[tests[padj<0.05, id]]
+png("figures/compound_heatmap.png", width=10, height=10, units="in", res=300)
 Heatmap(
-  log10(abund+1e-3), 
+  log10(abund+1e-3) |> t(), 
   col=viridis(100), 
-  left_annotation = groups, 
-  top_annotation = com_groups,
+  top_annotation = groups, 
+  left_annotation = com_groups,
   show_row_names = FALSE, show_column_names = FALSE,
-  column_title = "compound", row_title = "samples",
-  name="abundance [mg/100g]"
+  row_title = "compound", column_title = "samples",
+  name="abundance [log-scale]", raster_quality=2, raster_resize_mat = T
 )
+dev.off()
 ```
 
-```{r}
+```{r, fig.width=5, fig.height=3}
 macros <- meta[contents[source_type == "Nutrient"], on="sample_id", nomatch=0]
 macros <- dcast(macros, sample_id + group + Status ~ name, value.var="abundance", fill=0, fun.aggregate=sum)
 
 ggplot(macros) +
   aes(x=Proteins/1000, y=Carbohydrate/1000, color=Energy) +
   geom_point() + 
-  labs(x="Protein [g/100g]", y="Carbohydrate [g/100g]", color="Energy [kcal/100g]")
+  labs(x="Protein [g/100g]", y="Carbohydrate [g/100g]", color="Energy [kcal/100g]") +
+  scale_color_viridis_c()
+ggsave("figures/prot_carb.pdf", width=5, height=3)
 ```
 
 ## Differential foods
@@ -131,24 +139,52 @@ config <- config_association(
 )
 tests <- association(food_ps, config)
 anns <- unique(foods[, .(wikipedia_id, species, matched_taxid, food_group, food_subgroup)])
-tests <- anns[tests, on="species"]
+food_tests <- anns[tests, on="species"]
 ```
 
-```{r, fig.width=3, fig.height=4}
-theme_minimal() |> theme_set()
-tests[, "se" := log2FoldChange/t]
+```{r}
+config <- config_association(
+  variables = "group",
+  taxa_rank = "phylum",
+  in_samples = 0.0,
+  min_abundance = 3,
+  presence_threshold=0,
+  independent_weighting = FALSE,
+  shrink = F,
+  method="voom"
+)
+phylum_tests <- association(food_ps, config)
+phylum_tests
+```
 
-ggplot(tests[padj<0.05]) +
+```{r, fig.width=4, fig.height=3}
+theme_minimal() |> theme_set()
+food_tests[, "se" := log2FoldChange/t]
+
+ggplot(food_tests[padj<0.05]) +
   geom_vline(xintercept=0, linetype="dashed") +
   aes(x=log2FoldChange, xmin=log2FoldChange - se, 
       xmax=log2FoldChange + se, 
       y=reorder(species, log2FoldChange)) +
   geom_pointrange() +
   labs(x="log2 fold-change", y="")
+ggsave("figures/sig_species.pdf", width=4, height=3)
 ```
 
-```{r}
-plot_counts(food_ps, variable="group", tax_level="phylum", zeros=F)
+```{r, fig.width=3, fig.height=5}
+dt <- plot_counts(food_ps, variable="group", tax_level="phylum", zeros=T, normalized=F, only_data=T)
+dt[, "relative" := reads/sum(reads), by="sample"]
+
+ggplot(dt[taxa %in% c("Streptophyta", "Chordata")]) +
+  aes(x=group, y=reads + 0.5) +
+  geom_jitter(width=0.3, stroke=0, size=1, alpha=0.5) +
+  stat_summary(fun.data=mean_sdl, fun.args=list(mult=1),
+               geom="pointrange", shape=23, fill="white", size=0.8) +
+  facet_wrap(~ taxa) + 
+  scale_y_log10() + 
+  theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1)) +
+  labs(x="metabolic status", y="reads + pc")
+ggsave("figures/metacardis_phyla.pdf", width=3.5, height=6)
 ```
 
 Differential contents
@@ -168,24 +204,25 @@ config <- config_association(
 )
 tests <- association(content_ps, config)
 anns <- unique(contents[, .(id, name, unit, superclass, class, subclass)])
-tests <- anns[tests, on="id"]
+com_tests <- anns[tests, on="id"]
 ```
 
 ```{r, fig.width=5, fig.height=4}
 theme_minimal() |> theme_set()
-tests[, "se" := log2FoldChange/t]
+com_tests[, "se" := log2FoldChange/t]
 
-ggplot(tests[padj<0.05]) +
+ggplot(com_tests[padj<0.05]) +
   geom_vline(xintercept=0, linetype="dashed") +
   aes(x=log2FoldChange, xmin=log2FoldChange - se, 
       xmax=log2FoldChange + se, 
       y=reorder(name, log2FoldChange)) +
   geom_pointrange() +
   labs(x="log2 fold-change", y="")
+ggsave("figures/sig_compounds.pdf", width=5, height=4)
 ```
 
 ```{r, fig.width=6, fig.height=6}
-dt <- plot_counts(content_ps, variable="group", tax_level="name", taxa=tests[padj<0.05, name], normalized=F, zeros=T, only_data=T)
+dt <- plot_counts(content_ps, variable="group", tax_level="name", taxa=com_tests[padj<0.05, name], normalized=F, zeros=T, only_data=T)
 
 ggplot(dt) +
   aes(x=group, y=reads) +

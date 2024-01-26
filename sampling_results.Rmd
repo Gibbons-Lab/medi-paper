@@ -3,7 +3,7 @@
 ```{r}
 library(data.table)
 
-ground_truth <- fread("simulated/data/manifest.csv")
+ground_truth <- fread("simulated/data/manifest.csv")[sample_id != "negative"]
 setnames(ground_truth, "relative_abundance", "real_relative")
 ground_truth[, "expected_reads" := real_relative * depth]
 ground_truth
@@ -24,7 +24,7 @@ merged[is.na(reads), reads:=0]
 merged
 ```
 
-```{r, fig.width=4, fig.height=3}
+```{r, fig.width=10, fig.height=12}
 library(ggplot2)
 theme_minimal() |> theme_set()
 
@@ -38,19 +38,20 @@ options(scipen=3)
 merged[, "type" := tstrsplit(sample_id, "_")[[1]]]
 
 ggplot(merged) +
-  aes(x=expected_reads+1.0, y=reads+1.0, fill=within_genus) +
+  aes(x=expected_reads+1.0, y=reads+1.0) +
   stat_smooth(data=merged, method="lm", color="black", linewidth=1, aes(group=1)) +
   #geom_boxplot(width=0.4, aes(group=factor(expected_reads)), fill="white", color="black", outlier.color=NA) +
-  geom_point(stroke=0.5, shape=21, size=2) +
-  stat_summary(fun.data=mean_sdl, fun.args=list(mult=1), geom="pointrange", aes(group=1), shape=23, fill="white") +
+  geom_point(stroke=0.5, shape=21, size=2, aes(fill=within_genus)) +
+  #stat_summary(fun.data=mean_sdl, fun.args=list(mult=1), geom="pointrange", aes(group=1), shape=23, fill="white") +
+  geom_line(aes(group=genus), color="gray") +
   scale_x_log10() + scale_y_log10() + 
-  guides(fill=FALSE) +
+  guides(fill=FALSE) + facet_wrap(~ sample_id) +
   labs(x="expected [reads + 1]", y="observed [reads + 1]")
 ggsave("figures/simulated_comparison.png", dpi=300, width=4, height=3)
 ```
 
 ```{r}
-cor.test(~ log10(expected_reads + 1) + log10(reads + 1), data=merged)
+cor.test(~ log10(expected_reads + 1) + log10(reads + 1), data=merged[reads>0])
 corrs[, summary(r)]
 ```
 
