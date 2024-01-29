@@ -1,0 +1,561 @@
+food_id,wikipedia_id,food_group,food_subgroup,ncbi_taxonomy_id,db,rank,matched_taxid,kingdom,phylum,class,order,family,genus,species
+2,Savoy cabbage,Vegetables,Cabbages,1216010,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+4,Kiwifruit,Fruits,Tropical fruits,3625,genbank,species,3625,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Actinidiaceae,Actinidia,Actinidia chinensis
+6,Onion,Vegetables,Onion-family vegetables,4679,genbank,species,4679,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium cepa
+226,"",Vegetables,Onion-family vegetables,4679,genbank,species,4679,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium cepa
+8,Garlic,Herbs and Spices,Herbs,4682,genbank,species,4682,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium sativum
+880,Garlic,Herbs and Spices,Herbs,4682,genbank,species,4682,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium sativum
+11,Cashew_nut,Nuts,Nuts,171929,genbank,species,171929,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Anacardiaceae,Anacardium,Anacardium occidentale
+12,Pineapple,Fruits,Tropical fruits,4615,genbank,species,4615,Eukaryota,Streptophyta,Magnoliopsida,Poales,Bromeliaceae,Ananas,Ananas comosus
+15,Wild celery,Herbs and Spices,Spices,4045,genbank,species,4045,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Apium,Apium graveolens
+16,Mr. Peanut,Nuts,Nuts,3818,genbank,species,3818,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Arachis,Arachis hypogaea
+17,Arctium_lappa,Vegetables,Root vegetables,4217,genbank,species,4217,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Arctium,Arctium lappa
+21,Asparagus,Vegetables,Shoot vegetables,4686,genbank,species,4686,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Asparagaceae,Asparagus,Asparagus officinalis
+22,Oat,Cereals and cereal products,Cereals,4498,genbank,species,4498,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Avena,Avena sativa
+25,Beet,Vegetables,Leaf vegetables,161934,genbank,species,161934,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Chenopodiaceae,Beta,Beta vulgaris
+27,Brassica juncea,Vegetables,Cabbages,3707,genbank,species,3707,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica juncea
+28,Rutabaga,Vegetables,Root vegetables,3708,genbank,species,3708,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica napus
+29,Rapeseed,Vegetables,Root vegetables,138011,genbank,species,3708,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica napus
+797,Canola,Herbs and spices,Oilseed crops,138011,genbank,species,3708,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica napus
+30,Brassica_oleracea,Vegetables,Cabbages,3712,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+31,Cauliflower,Vegetables,Cabbages,3715,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+32,Brussels sprout,Vegetables,Cabbages,178616,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+33,Kohlrabi,Vegetables,Root vegetables,109379,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+34,Broccoli,Vegetables,Cabbages,36774,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+35,Chinese_cabbage,Vegetables,Cabbages,3711,genbank,species,3711,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica rapa
+36,Turnip,Herbs and Spices,Herbs,51350,genbank,species,3711,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica rapa
+37,Pigeon pea,Pulses,Peas,3821,genbank,species,3821,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Cajanus,Cajanus cajan
+38,Tea,Teas,Teas,4442,genbank,species,4442,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Theaceae,Camellia,Camellia sinensis
+40,Capsicum_annuum,Vegetables,Fruit vegetables,4072,genbank,species,4072,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum annuum
+909,Capsicum_annuum,Vegetables,Fruit vegetables,4072,genbank,species,4072,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum annuum
+910,Capsicum_annuum,Vegetables,Fruit vegetables,4072,genbank,species,4072,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum annuum
+911,Capsicum_annuum,Vegetables,Fruit vegetables,4072,genbank,species,4072,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum annuum
+912,Capsicum_annuum,Vegetables,Fruit vegetables,4072,genbank,species,4072,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum annuum
+913,Italian sweet pepper,Vegetables,Fruit vegetables,4072,genbank,species,4072,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum annuum
+41,Papaya,Fruits,Tropical fruits,3649,genbank,species,3649,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Caricaceae,Carica,Carica papaya
+42,Safflower,Herbs and Spices,Oilseed crops,4222,genbank,species,4222,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Carthamus,Carthamus tinctorius
+44,Pecan_nut,Nuts,Nuts,32201,genbank,species,32201,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Juglandaceae,Carya,Carya illinoinensis
+47,Chickpea,Pulses,Peas,3827,genbank,species,3827,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Cicer,Cicer arietinum
+48,Endive,Vegetables,Leaf vegetables,114280,genbank,species,114280,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Cichorium,Cichorium endivia
+49,Chicory,Vegetables,Root vegetables,13427,genbank,species,13427,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Cichorium,Cichorium intybus
+250,"",Vegetables,Leaf vegetables,13427,genbank,species,13427,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Cichorium,Cichorium intybus
+254,Chicory,Vegetables,Root vegetables,13427,genbank,species,13427,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Cichorium,Cichorium intybus
+52,Watermelon,Gourds,Gourds,3654,genbank,species,3654,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Citrullus,Citrullus lanatus
+54,Lemon,Fruits,Citrus,2708,genbank,species,2708,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,Citrus x limon
+55,Pomelo,Fruits,Citrus,37334,genbank,species,37334,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,Citrus maxima
+56,Mandarin_orange,Fruits,Citrus,85571,genbank,species,85571,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,Citrus reticulata
+57,Sweet_orange,Fruits,Citrus,2711,genbank,species,2711,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,Citrus sinensis
+59,Arabica_coffee,Coffee and coffee products,Coffee,13443,genbank,species,13443,Eukaryota,Streptophyta,Magnoliopsida,Gentianales,Rubiaceae,Coffea,Coffea arabica
+60,Robusta coffee,Coffee and coffee products,Coffee,49390,genbank,species,49390,Eukaryota,Streptophyta,Magnoliopsida,Gentianales,Rubiaceae,Coffea,Coffea canephora
+62,Corylus avellana,Nuts,Nuts,13451,genbank,species,13451,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Betulaceae,Corylus,Corylus avellana
+63,Saffron,Herbs and Spices,Spices,82528,genbank,species,82528,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Iridaceae,Crocus,Crocus sativus
+64,Muskmelon,Gourds,Gourds,3656,genbank,species,3656,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Cucumis,Cucumis melo
+65,Cucumber,Gourds,Gourds,3659,genbank,species,3659,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Cucumis,Cucumis sativus
+68,Turmeric,Herbs and Spices,Spices,136217,genbank,species,136217,Eukaryota,Streptophyta,Magnoliopsida,Zingiberales,Zingiberaceae,Curcuma,Curcuma longa
+69,Quince,Fruits,Pomes,36610,genbank,species,36610,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Cydonia,Cydonia oblonga
+70,Cymbopogon citratus,Herbs and Spices,Herbs,66014,genbank,species,66014,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Cymbopogon,Cymbopogon citratus
+71,Artichoke,Vegetables,Shoot vegetables,59895,genbank,species,4265,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Cynara,Cynara cardunculus
+72,Daucus carota,Vegetables,Root vegetables,4039,genbank,species,4039,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Daucus,Daucus carota
+73,Japanese_persimmon,Fruits,Tropical fruits,35925,genbank,species,35925,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ebenaceae,Diospyros,Diospyros kaki
+77,Rocket_(salad),Vegetables,Leaf vegetables,29727,genbank,species,180536,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Eruca,Eruca vesicaria
+79,Buckwheat,Cereals and cereal products,Cereals,3617,genbank,species,3617,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Polygonaceae,Fagopyrum,Fagopyrum esculentum
+80,Fagopyrum tataricum,Cereals and cereal products,Cereals,62330,genbank,species,62330,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Polygonaceae,Fagopyrum,Fagopyrum tataricum
+81,Ficus_carica,Fruits,Other fruits,3494,genbank,species,3494,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Moraceae,Ficus,Ficus carica
+82,Fennel,Herbs and Spices,Herbs,48038,genbank,species,2849586,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Anethum,Anethum foeniculum
+83,Strawberry,Fruits,Berries,3747,genbank,species,3747,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Fragaria,Fragaria x ananassa
+85,Soybean,Soy,Soy,3847,genbank,species,3847,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Glycine,Glycine max
+86,Sunflower,Herbs and Spices,Oilseed crops,4232,genbank,species,4232,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Helianthus,Helianthus annuus
+87,Hippophae rhamnoides,Fruits,Berries,193516,genbank,species,193516,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Elaeagnaceae,Hippophae,Hippophae rhamnoides
+88,Barley,Cereals and cereal products,Cereals,4513,genbank,species,4513,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Hordeum,Hordeum vulgare
+92,Sweet Potato Pie (album),Vegetables,Tubers,4120,genbank,species,4120,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Convolvulaceae,Ipomoea,Ipomoea batatas
+93,Black_walnut,Nuts,Nuts,16719,genbank,species,16719,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Juglandaceae,Juglans,Juglans nigra
+94,Juglans regia,Nuts,Nuts,51240,genbank,species,51240,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Juglandaceae,Juglans,Juglans regia
+95,Lettuce,Vegetables,Leaf vegetables,4236,genbank,species,4236,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Lactuca,Lactuca sativa
+96,Lathyrus sativus,Pulses,Peas,3860,genbank,species,3860,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Lathyrus,Lathyrus sativus
+99,Garden cress,Vegetables,Leaf vegetables,33125,genbank,species,33125,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Lepidium,Lepidium sativum
+101,Flax,Herbs and Spices,Oilseed crops,4006,genbank,species,4006,Eukaryota,Streptophyta,Magnoliopsida,Malpighiales,Linaceae,Linum,Linum usitatissimum
+103,Lichee,Fruits,Tropical fruits,151069,genbank,species,151069,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Sapindaceae,Litchi,Litchi chinensis
+106,Mango,Fruits,Tropical fruits,29780,genbank,species,29780,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Anacardiaceae,Mangifera,Mangifera indica
+115,Bitter melon,Gourds,Gourds,3673,genbank,species,3673,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Momordica,Momordica charantia
+120,Evening_primrose,Herbs and Spices,Oilseed crops,3942,genbank,species,3942,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Onagraceae,Oenothera,Oenothera biennis
+121,Olive,Vegetables,Fruit vegetables,4146,genbank,species,4146,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Oleaceae,Olea,Olea europaea
+125,Rice,Cereals and cereal products,Cereals,4530,genbank,species,4530,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Oryza,Oryza sativa
+126,Millet,Cereals and cereal products,Cereals,4540,genbank,species,4540,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Panicum,Panicum miliaceum
+128,Passiflora edulis,Fruits,Tropical fruits,78168,genbank,species,78168,Eukaryota,Streptophyta,Magnoliopsida,Malpighiales,Passifloraceae,Passiflora,Passiflora edulis
+130,Avocado,Vegetables,Fruit vegetables,3435,genbank,species,3435,Eukaryota,Streptophyta,Magnoliopsida,Laurales,Lauraceae,Persea,Persea americana
+132,Phaseolus_coccineus,Pulses,Beans,3886,genbank,species,3886,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Phaseolus,Phaseolus coccineus
+133,Phaseolus lunatus,Pulses,Beans,3884,genbank,species,3884,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Phaseolus,Phaseolus lunatus
+134,Phaseolus_vulgaris,Pulses,Beans,3885,genbank,species,3885,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Phaseolus,Phaseolus vulgaris
+914,Phaseolus_vulgaris,Pulses,Beans,3885,genbank,species,3885,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Phaseolus,Phaseolus vulgaris
+915,Phaseolus vulgaris,Pulses,Beans,3885,genbank,species,3885,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Phaseolus,Phaseolus vulgaris
+135,Date_(fruit)#Dates,Fruits,Other fruits,42345,genbank,species,42345,Eukaryota,Streptophyta,Magnoliopsida,Arecales,Arecaceae,Phoenix,Phoenix dactylifera
+140,Pistachio,Nuts,Nuts,55513,genbank,species,55513,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Anacardiaceae,Pistacia,Pistacia vera
+141,Pea,Pulses,Peas,3888,genbank,species,3888,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Pisum,Pisum sativum
+142,Purslane,Herbs and Spices,Herbs,46147,genbank,species,46147,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Portulacaceae,Portulaca,Portulaca oleracea
+144,Apricot,Fruits,Drupes,36596,genbank,species,36596,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus armeniaca
+145,Prunus avium,Fruits,Drupes,42229,genbank,species,42229,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus avium
+148,Prunus_dulcis,Nuts,Nuts,3755,genbank,species,3755,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus dulcis
+149,Peach,Fruits,Drupes,3760,genbank,species,3760,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus persica
+150,Guava,Fruits,Tropical fruits,120290,genbank,species,120290,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Psidium,Psidium guajava
+151,Pomegranate,Fruits,Tropical fruits,22663,genbank,species,22663,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Lythraceae,Punica,Punica granatum
+152,Pear,Fruits,Pomes,23211,genbank,species,23211,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Pyrus,Pyrus communis
+153,Radish,Vegetables,Root vegetables,3726,genbank,species,3726,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Raphanus,Raphanus sativus
+162,Red_raspberry,Fruits,Berries,32247,genbank,species,32247,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Rubus,Rubus idaeus
+166,Sambucus nigra,Fruits,Berries,4202,genbank,species,4202,Eukaryota,Streptophyta,Magnoliopsida,Dipsacales,Adoxaceae,Sambucus,Sambucus nigra
+169,Rye,Cereals and cereal products,Cereals,4550,genbank,species,4550,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Secale,Secale cereale
+170,Sesame,Herbs and Spices,Oilseed crops,4182,genbank,species,4182,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Pedaliaceae,Sesamum,Sesamum indicum
+171,Solanum_lycopersicum,Vegetables,Fruit vegetables,4081,genbank,species,4081,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Solanum,Solanum lycopersicum
+172,Cherry tomato,Vegetables,Fruit vegetables,195583,genbank,species,4081,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Solanum,Solanum lycopersicum
+174,Eggplant,Vegetables,Fruit vegetables,4111,genbank,species,4111,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Solanum,Solanum melongena
+175,Potato,Vegetables,Tubers,4113,genbank,species,4113,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Solanum,Solanum tuberosum
+177,Sorghum,Cereals and cereal products,Cereals,4558,genbank,species,4558,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Sorghum,Sorghum bicolor
+178,Spinach,Vegetables,Leaf vegetables,3562,genbank,species,3562,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Chenopodiaceae,Spinacia,Spinacia oleracea
+179,Cloves,Herbs and Spices,Spices,219868,genbank,species,219868,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Syzygium,Syzygium aromaticum
+182,Cocoa_bean,Cocoa and cocoa products,Cocoa,3641,genbank,species,3641,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Theobroma,Theobroma cacao
+187,Common wheat,Cereals and cereal products,Cereals,4565,genbank,species,4565,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Triticum,Triticum aestivum
+191,Vaccinium corymbosum,Fruits,Berries,69266,genbank,species,69266,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium corymbosum
+192,Vaccinium macrocarpon,Fruits,Berries,13750,genbank,species,13750,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium macrocarpon
+193,Bilberry,Fruits,Berries,180763,genbank,species,180763,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium myrtillus
+194,Vaccinium vitis-idaea,Fruits,Berries,180772,genbank,species,180772,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium vitis-idaea
+196,Verbena officinalis,Herbs and Spices,Herbs,79772,genbank,species,79772,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Verbenaceae,Verbena,Verbena officinalis
+197,Broad_bean,Pulses,Beans,3906,genbank,species,3906,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vicia,Vicia faba
+198,Azuki bean,Pulses,Beans,3914,genbank,species,3914,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna angularis
+199,Vigna_mungo,Pulses,Beans,3915,genbank,species,3915,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna mungo
+200,Mung bean,Pulses,Beans,157791,genbank,species,157791,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna radiata
+201,Vigna umbellata,Pulses,Beans,87088,genbank,species,87088,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna umbellata
+202,Cowpea,Pulses,Peas,3917,genbank,species,3917,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna unguiculata
+203,Muscadine,Fruits,Berries,103349,genbank,species,103349,Eukaryota,Streptophyta,Magnoliopsida,Vitales,Vitaceae,Vitis,Vitis rotundifolia
+204,Vitis vinifera,Fruits,Berries,29760,genbank,species,29760,Eukaryota,Streptophyta,Magnoliopsida,Vitales,Vitaceae,Vitis,Vitis vinifera
+205,Corn,Cereals and cereal products,Cereals,4577,genbank,species,4577,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Zea,Zea mays
+206,Ginger,Herbs and Spices,Spices,94328,genbank,species,94328,Eukaryota,Streptophyta,Magnoliopsida,Zingiberales,Zingiberaceae,Zingiber,Zingiber officinale
+208,Banana,Fruits,Tropical fruits,4641,genbank,species,4641,Eukaryota,Streptophyta,Magnoliopsida,Zingiberales,Musaceae,Musa,Musa acuminata
+214,Celeriac,Vegetables,Root vegetables,278110,genbank,species,4045,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Apium,Apium graveolens
+215,Apium_graveolens,Vegetables,Stalk vegetables,117781,genbank,species,4045,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Apium,Apium graveolens
+219,Ginseng,Herbs and Spices,Spices,4054,genbank,species,4054,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Araliaceae,Panax,Panax ginseng
+224,Longan,Fruits,Tropical fruits,128017,genbank,species,128017,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Sapindaceae,Dimocarpus,Dimocarpus longan
+225,Macadamia tetraphylla,Nuts,Nuts,512563,genbank,species,512563,Eukaryota,Streptophyta,Magnoliopsida,Proteales,Proteaceae,Macadamia,Macadamia tetraphylla
+227,Vitis aestivalis,Fruits,Berries,3605,genbank,species,3605,Eukaryota,Streptophyta,Magnoliopsida,Vitales,Vitaceae,Vitis,Vitis aestivalis
+228,Vitis_labrusca,Fruits,Berries,103355,genbank,species,103355,Eukaryota,Streptophyta,Magnoliopsida,Vitales,Vitaceae,Vitis,Vitis labrusca
+229,Nectarine#Nectarines,Fruits,Drupes,323851,genbank,species,3760,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus persica
+230,"",Fruits,Drupes,323852,genbank,species,3760,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus persica
+231,Capsicum_baccatum,Vegetables,Fruit vegetables,165788,genbank,species,33114,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum baccatum
+232,Capsicum_chinense,Vegetables,Fruit vegetables,80379,genbank,species,80379,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum chinense
+234,Rambutan,Fruits,Tropical fruits,151071,genbank,species,151071,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Sapindaceae,Nephelium,Nephelium lappaceum
+235,Oryza_rufipogon,Cereals and cereal products,Cereals,4529,genbank,species,4529,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Oryza,Oryza rufipogon
+237,Swiss_chard,Vegetables,Leaf vegetables,1527200,genbank,species,161934,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Chenopodiaceae,Beta,Beta vulgaris
+239,"",Vegetables,Cabbages,416546,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+241,Welsh_onion,Herbs and Spices,Herbs,35875,genbank,species,35875,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium fistulosum
+242,Hard_wheat,Cereals and cereal products,Cereals,4567,genbank,species,4571,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Triticum,Triticum turgidum
+244,Rocket_(salad),Vegetables,Leaf vegetables,180536,genbank,species,180536,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Eruca,Eruca vesicaria
+245,Carrot,Vegetables,Root vegetables,79200,genbank,species,4039,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Daucus,Daucus carota
+247,"",Vegetables,Cabbages,3713,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+249,Apium_graveolens_var._secalinum,Herbs and Spices,Herbs,941588,genbank,species,4045,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Apium,Apium graveolens
+251,Komatsuna,Vegetables,Cabbages,344680,genbank,species,3711,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica rapa
+252,Pak_choy,Vegetables,Cabbages,93385,genbank,species,3711,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica rapa
+253,Napa_cabbage,Vegetables,Cabbages,51351,genbank,species,3711,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica rapa
+258,Kai-lan,Vegetables,Cabbages,3714,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+335,Chinese_broccoli,Vegetables,Cabbages,3714,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+261,Daikon,Vegetables,Root vegetables,41679,genbank,species,3726,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Raphanus,Raphanus sativus
+262,"",Vegetables,Root vegetables,41679,genbank,species,3726,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Raphanus,Raphanus sativus
+263,"",Vegetables,Root vegetables,240228,genbank,species,3726,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Raphanus,Raphanus sativus
+266,Salvia_elegans,Herbs and Spices,Herbs,888065,genbank,species,888065,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Salvia,Salvia elegans
+284,Winter squash,Gourds,Gourds,3661,genbank,species,3661,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Cucurbita,Cucurbita maxima
+918,Kabocha,Gourds,Gourds,3661,genbank,species,3661,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Cucurbita,Cucurbita maxima
+286,Paralithodes camtschaticus,Aquatic foods,Crustaceans,6741,genbank,species,6741,Eukaryota,Arthropoda,Malacostraca,Decapoda,Lithodidae,Paralithodes,Paralithodes camtschaticus
+292,Pyrus pyrifolia,Fruits,Pomes,3767,genbank,species,3767,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Pyrus,Pyrus pyrifolia
+293,Atlantic herring,Aquatic foods,Fishes,7950,genbank,species,7950,Eukaryota,Chordata,Actinopteri,Clupeiformes,Clupeidae,Clupea,Clupea harengus
+294,Atlantic mackerel,Aquatic foods,Fishes,13677,genbank,species,13677,Eukaryota,Chordata,Actinopteri,Scombriformes,Scombridae,Scomber,Scomber scombrus
+296,Pollachius pollachius,Aquatic foods,Fishes,185739,genbank,species,185739,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Pollachius,Pollachius pollachius
+298,Bamboo_shoots,Vegetables,Shoot vegetables,38705,genbank,species,38705,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Phyllostachys,Phyllostachys edulis
+299,Striped bass,Aquatic foods,Fishes,34816,genbank,species,34816,Eukaryota,Chordata,Actinopteri,"",Moronidae,Morone,Morone saxatilis
+302,Beluga_whale,Aquatic foods,Cetaceans,9749,genbank,species,9749,Eukaryota,Chordata,Mammalia,Artiodactyla,Monodontidae,Delphinapterus,Delphinapterus leucas
+303,Bison,Animal foods,Bovines,9901,genbank,species,9901,Eukaryota,Chordata,Mammalia,Artiodactyla,Bovidae,Bison,Bison bison
+305,Alaska blackfish,Aquatic foods,Fishes,75939,genbank,species,75939,Eukaryota,Chordata,Actinopteri,Esociformes,Umbridae,Dallia,Dallia pectoralis
+306,Callinectes_sapidus,Aquatic foods,Crustaceans,6763,genbank,species,6763,Eukaryota,Arthropoda,Malacostraca,Decapoda,Portunidae,Callinectes,Callinectes sapidus
+307,Blue mussel,Aquatic foods,Mollusks,6550,genbank,species,6550,Eukaryota,Mollusca,Bivalvia,Mytilida,Mytilidae,Mytilus,Mytilus edulis
+308,Atlantic bluefin tuna,Aquatic foods,Fishes,8237,genbank,species,8237,Eukaryota,Chordata,Actinopteri,Scombriformes,Scombridae,Thunnus,Thunnus thynnus
+310,Wild boar,Animal foods,Swine,9823,genbank,species,9823,Eukaryota,Chordata,Mammalia,Artiodactyla,Suidae,Sus,Sus scrofa
+314,Rapini,Vegetables,Cabbages,1204434,genbank,species,3711,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica rapa
+316,Bubalus_bubalis,Animal foods,Bovines,89462,genbank,species,89462,Eukaryota,Chordata,Mammalia,Artiodactyla,Bovidae,Bubalus,Bubalus bubalis
+317,Burbot,Aquatic foods,Fishes,69944,genbank,species,69944,Eukaryota,Chordata,Actinopteri,Gadiformes,Lotidae,Lota,Lota lota
+320,Juglans_cinerea,Nuts,Nuts,91214,genbank,species,91214,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Juglandaceae,Juglans,Juglans cinerea
+321,Butternut squash,Gourds,Gourds,3662,genbank,species,3662,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Cucurbita,Cucurbita moschata
+322,Calabash,Gourds,Gourds,3668,genbank,species,3668,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Lagenaria,Lagenaria siceraria
+323,Cardoon,Vegetables,Shoot vegetables,4265,genbank,species,4265,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Cynara,Cynara cardunculus
+326,Carob,Vegetables,Other vegetables,20340,genbank,species,20340,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Ceratonia,Ceratonia siliqua
+327,Common carp,Aquatic foods,Fishes,7962,genbank,species,7962,Eukaryota,Chordata,Actinopteri,Cypriniformes,Cyprinidae,Cyprinus,Cyprinus carpio
+328,Cassava,Vegetables,Tubers,3983,genbank,species,3983,Eukaryota,Streptophyta,Magnoliopsida,Malpighiales,Euphorbiaceae,Manihot,Manihot esculenta
+329,Channel_catfish,Aquatic foods,Fishes,7998,genbank,species,7998,Eukaryota,Chordata,Actinopteri,Siluriformes,Ictaluridae,Ictalurus,Ictalurus punctatus
+331,Cherimoya,Fruits,Tropical fruits,49314,genbank,species,49314,Eukaryota,Streptophyta,Magnoliopsida,Magnoliales,Annonaceae,Annona,Annona cherimola
+333,Salvia_hispanica,Herbs and Spices,Other seeds,49212,genbank,species,49212,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Salvia,Salvia hispanica
+334,Chicken,Animal foods,Poultry,9031,genbank,species,9031,Eukaryota,Chordata,Aves,Galliformes,Phasianidae,Gallus,Gallus gallus
+336,Chinese_chestnut,Nuts,Nuts,60419,genbank,species,60419,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Fagaceae,Castanea,Castanea mollissima
+338,Garland chrysanthemum,Vegetables,Leaf vegetables,99038,genbank,species,99038,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Glebionis,Glebionis coronaria
+340,Clinocardium nuttallii,Aquatic foods,Mollusks,410350,genbank,species,410350,Eukaryota,Mollusca,Bivalvia,Cardiida,Cardiidae,Clinocardium,Clinocardium nuttallii
+341,Coconut,Fruits,Tropical fruits,13894,genbank,species,13894,Eukaryota,Streptophyta,Magnoliopsida,Arecales,Arecaceae,Cocos,Cocos nucifera
+342,Pacific_cod,Aquatic foods,Fishes,80720,genbank,species,80720,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Gadus,Gadus macrocephalus
+343,Atlantic_cod,Aquatic foods,Fishes,8049,genbank,species,8049,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Gadus,Gadus morhua
+344,Common octopus,Aquatic foods,Mollusks,6645,genbank,species,6645,Eukaryota,Mollusca,Cephalopoda,Octopoda,Octopodidae,Octopus,Octopus vulgaris
+351,Cusk (fish),Aquatic foods,Fishes,81638,genbank,species,81638,Eukaryota,Chordata,Actinopteri,Gadiformes,Lotidae,Brosme,Brosme brosme
+358,Mallard_duck,Animal foods,Poultry,8839,genbank,species,8839,Eukaryota,Chordata,Aves,Anseriformes,Anatidae,Anas,Anas platyrhynchos
+359,Dungeness crab,Aquatic foods,Crustaceans,29965,genbank,species,29965,Eukaryota,Arthropoda,Malacostraca,Decapoda,Cancridae,Metacarcinus,Metacarcinus magister
+360,Durian,Fruits,Tropical fruits,66656,genbank,species,66656,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Durio,Durio zibethinus
+361,Eastern oyster,Aquatic foods,Mollusks,6565,genbank,species,6565,Eukaryota,Mollusca,Bivalvia,Ostreida,Ostreidae,Crassostrea,Crassostrea virginica
+364,Elk,Animal foods,Venison,1574408,genbank,species,1574408,Eukaryota,Chordata,Mammalia,Artiodactyla,Cervidae,Cervus,Cervus canadensis
+365,Emu,Animal foods,Poultry,8790,genbank,species,8790,Eukaryota,Chordata,Aves,Casuariiformes,Dromaiidae,Dromaius,Dromaius novaehollandiae
+367,European anchovy,Aquatic foods,Fishes,184585,genbank,species,184585,Eukaryota,Chordata,Actinopteri,Clupeiformes,Engraulidae,Engraulis,Engraulis encrasicolus
+369,Turbot,Aquatic foods,Fishes,52904,genbank,species,52904,Eukaryota,Chordata,Actinopteri,Pleuronectiformes,Scophthalmidae,Scophthalmus,Scophthalmus maximus
+370,Chamerion angustifolium,Herbs and Spices,Herbs,13055,genbank,species,13055,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Onagraceae,Chamaenerion,Chamaenerion angustifolium
+372,Ginkgo biloba,Herbs and Spices,Other seeds,3311,genbank,species,3311,Eukaryota,Streptophyta,Ginkgoopsida,Ginkgoales,Ginkgoaceae,Ginkgo,Ginkgo biloba
+375,Greenland halibut,Aquatic foods,Fishes,111784,genbank,species,111784,Eukaryota,Chordata,Actinopteri,Pleuronectiformes,Pleuronectidae,Reinhardtius,Reinhardtius hippoglossoides
+378,Guinea_hen,Animal foods,Poultry,8996,genbank,species,8996,Eukaryota,Chordata,Aves,Galliformes,Numididae,Numida,Numida meleagris
+379,Haddock,Aquatic foods,Fishes,8056,genbank,species,8056,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Melanogrammus,Melanogrammus aeglefinus
+383,Horse,Animal foods,Equines,9796,genbank,species,9796,Eukaryota,Chordata,Mammalia,Perissodactyla,Equidae,Equus,Equus caballus
+384,Horseradish_tree,Vegetables,Other vegetables,3735,genbank,species,3735,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Moringaceae,Moringa,Moringa oleifera
+386,Lablab purpureus,Pulses,Beans,35936,genbank,species,35936,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Lablab,Lablab purpureus
+387,Chondrus_crispus,Aquatic foods,Seaweed,2769,genbank,species,2769,Eukaryota,Rhodophyta,Florideophyceae,Gigartinales,Gigartinaceae,Chondrus,Chondrus crispus
+389,Jackfruit,Fruits,Tropical fruits,3489,genbank,species,3489,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Moraceae,Artocarpus,Artocarpus heterophyllus
+390,Japanese Chestnut,Nuts,Nuts,103480,genbank,species,103480,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Fagaceae,Castanea,Castanea crenata
+392,Jerusalem artichoke,Vegetables,Tubers,4233,genbank,species,4233,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Helianthus,Helianthus tuberosus
+394,Jute,Vegetables,Leaf vegetables,93759,genbank,species,93759,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Corchorus,Corchorus olitorius
+399,Chenopodium album,Vegetables,Leaf vegetables,3559,genbank,species,3559,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Chenopodiaceae,Chenopodium,Chenopodium album
+400,Katharina tunicata,Aquatic foods,Mollusks,34587,genbank,species,34587,Eukaryota,Mollusca,Polyplacophora,Chitonida,Mopaliidae,Katharina,Katharina tunicata
+402,Common ling,Aquatic foods,Fishes,163112,genbank,species,163112,Eukaryota,Chordata,Actinopteri,Gadiformes,Lotidae,Molva,Molva molva
+403,Lingcod,Aquatic foods,Fishes,225387,genbank,species,225387,Eukaryota,Chordata,Actinopteri,Perciformes,Hexagrammidae,Ophiodon,Ophiodon elongatus
+404,American lobster,Aquatic foods,Crustaceans,6706,genbank,species,6706,Eukaryota,Arthropoda,Malacostraca,Decapoda,Nephropidae,Homarus,Homarus americanus
+407,Nelumbo_nucifera,Vegetables,Other vegetables,4432,genbank,species,4432,Eukaryota,Streptophyta,Magnoliopsida,Proteales,Nelumbonaceae,Nelumbo,Nelumbo nucifera
+408,White_lupine,Pulses,Other pulses,3870,genbank,species,3870,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Lupinus,Lupinus albus
+413,Milkfish,Aquatic foods,Fishes,29144,genbank,species,29144,Eukaryota,Chordata,Actinopteri,Gonorynchiformes,Chanidae,Chanos,Chanos chanos
+414,Monkfish,Aquatic foods,Fishes,8074,genbank,species,8074,Eukaryota,Chordata,Actinopteri,Lophiiformes,Lophiidae,Lophius,Lophius piscatorius
+418,Flathead mullet,Aquatic foods,Fishes,48193,genbank,species,48193,Eukaryota,Chordata,Actinopteri,Mugiliformes,Mugilidae,Mugil,Mugil cephalus
+420,White_mustard,Herbs and Spices,Spices,3728,genbank,species,3728,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Sinapis,Sinapis alba
+425,Enteroctopus dofleini,Aquatic foods,Mollusks,267067,genbank,species,267067,Eukaryota,Mollusca,Cephalopoda,Octopoda,Octopodidae,Enteroctopus,Enteroctopus dofleini
+430,Ostrich,Animal foods,Poultry,8801,genbank,species,8801,Eukaryota,Chordata,Aves,Struthioniformes,Struthionidae,Struthio,Struthio camelus
+433,Pacific_oyster,Aquatic foods,Mollusks,29159,genbank,species,29159,Eukaryota,Mollusca,Bivalvia,Ostreida,Ostreidae,Crassostrea,Crassostrea gigas
+435,Velvet Scoter,Animal foods,Poultry,371864,genbank,species,371864,Eukaryota,Chordata,Aves,Anseriformes,Anatidae,Melanitta,Melanitta fusca
+436,Capsicum_frutescens,Vegetables,Fruit vegetables,40321,genbank,species,4072,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum annuum
+438,Pheasant,Animal foods,Poultry,9054,genbank,species,9054,Eukaryota,Chordata,Aves,Galliformes,Phasianidae,Phasianus,Phasianus colchicus
+439,Northern_pike,Aquatic foods,Fishes,8010,genbank,species,8010,Eukaryota,Chordata,Actinopteri,Esociformes,Esocidae,Esox,Esox lucius
+442,Eugenia_uniflora,Fruits,Tropical fruits,119951,genbank,species,119951,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Eugenia,Eugenia uniflora
+447,Opium_poppy,Herbs and Spices,Spices,3469,genbank,species,3469,Eukaryota,Streptophyta,Magnoliopsida,Ranunculales,Papaveraceae,Papaver,Papaver somniferum
+450,Quinoa,Herbs and Spices,Other seeds,63459,genbank,species,63459,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Chenopodiaceae,Chenopodium,Chenopodium quinoa
+454,Rainbow trout,Aquatic foods,Fishes,8022,genbank,species,8022,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Oncorhynchus,Oncorhynchus mykiss
+455,Malabar_plum,Fruits,Tropical fruits,334483,genbank,species,334483,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Syzygium,Syzygium jambos
+457,Roselle_(plant),Herbs and Spices,Herbs,183260,genbank,species,183260,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Hibiscus,Hibiscus sabdariffa
+748,Hibiscus_tea,Teas,Herbal teas,183260,genbank,species,183260,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Hibiscus,Hibiscus sabdariffa
+458,Orange roughy,Aquatic foods,Fishes,96778,genbank,species,96778,Eukaryota,Chordata,Actinopteri,Trachichthyiformes,Trachichthyidae,Hoplostethus,Hoplostethus atlanticus
+459,Sablefish,Aquatic foods,Fishes,229290,genbank,species,229290,Eukaryota,Chordata,Actinopteri,Perciformes,Anoplopomatidae,Anoplopoma,Anoplopoma fimbria
+460,Pink_salmon,Aquatic foods,Fishes,8017,genbank,species,8017,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Oncorhynchus,Oncorhynchus gorbuscha
+461,Chum_salmon,Aquatic foods,Fishes,8018,genbank,species,8018,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Oncorhynchus,Oncorhynchus keta
+462,Coho_salmon,Aquatic foods,Fishes,8019,genbank,species,8019,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Oncorhynchus,Oncorhynchus kisutch
+463,Sockeye_salmon,Aquatic foods,Fishes,8023,genbank,species,8023,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Oncorhynchus,Oncorhynchus nerka
+464,Chinook salmon,Aquatic foods,Fishes,74940,genbank,species,74940,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Oncorhynchus,Oncorhynchus tshawytscha
+465,Atlantic salmon,Aquatic foods,Fishes,8030,genbank,species,8030,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Salmo,Salmo salar
+474,Sea cucumber,Aquatic foods,Other aquatic foods,7689,genbank,species,2032702,Eukaryota,Echinodermata,Holothuroidea,Aspidochirotida,Stichopodidae,Apostichopus,Apostichopus californicus
+475,Steller sea lion,Aquatic foods,Pinnipeds,34886,genbank,species,34886,Eukaryota,Chordata,Mammalia,Carnivora,Otariidae,Eumetopias,Eumetopias jubatus
+477,Ringed seal,Aquatic foods,Pinnipeds,9718,genbank,species,9718,Eukaryota,Chordata,Mammalia,Carnivora,Phocidae,Pusa,Pusa hispida
+479,Sesbania_bispinosa,Vegetables,Other vegetables,485725,genbank,species,485725,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Sesbania,Sesbania bispinosa
+480,American shad,Aquatic foods,Fishes,34773,genbank,species,34773,Eukaryota,Chordata,Actinopteri,Clupeiformes,Clupeidae,Alosa,Alosa sapidissima
+483,Sheep,Animal foods,Ovis,9940,genbank,species,9940,Eukaryota,Chordata,Mammalia,Artiodactyla,Bovidae,Ovis,Ovis aries
+497,Pumpkinseed,Aquatic foods,Fishes,270329,genbank,species,270329,Eukaryota,Chordata,Actinopteri,Centrarchiformes,Centrarchidae,Lepomis,Lepomis gibbosus
+498,Swordfish,Aquatic foods,Fishes,8245,genbank,species,8245,Eukaryota,Chordata,Actinopteri,Istiophoriformes,Xiphiidae,Xiphias,Xiphias gladius
+499,Taro,Vegetables,Root vegetables,4460,genbank,species,4460,Eukaryota,Streptophyta,Magnoliopsida,Alismatales,Araceae,Colocasia,Colocasia esculenta
+500,Teff,Herbs and Spices,Herbs,110835,genbank,species,110835,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Eragrostis,Eragrostis tef
+503,Luffa,Gourds,Gourds,3670,genbank,species,3670,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Luffa,Luffa aegyptiaca
+505,Meleagris_gallopavo,Animal foods,Poultry,9103,genbank,species,9103,Eukaryota,Chordata,Aves,Galliformes,Phasianidae,Meleagris,Meleagris gallopavo
+506,Cattle,Animal foods,Bovines,9913,genbank,species,9913,Eukaryota,Chordata,Mammalia,Artiodactyla,Bovidae,Bos,Bos taurus
+507,Walleye,Aquatic foods,Fishes,283036,genbank,species,283036,Eukaryota,Chordata,Actinopteri,Perciformes,Percidae,Sander,Sander vitreus
+508,Alaska pollock,Aquatic foods,Fishes,1042646,genbank,species,1042646,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Gadus,Gadus chalcogrammus
+509,Wasabi,Herbs and Spices,Spices,75806,genbank,species,75806,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Eutrema,Eutrema japonicum
+510,Wax_gourd,Gourds,Gourds,102211,genbank,species,102211,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Benincasa,Benincasa hispida
+512,Pollachius_virens,Aquatic foods,Fishes,8060,genbank,species,8060,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Pollachius,Pollachius virens
+515,Merlangius_merlangus,Aquatic foods,Fishes,8058,genbank,species,8058,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Merlangius,Merlangius merlangus
+520,Jicama,Vegetables,Root vegetables,109171,genbank,species,109171,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Pachyrhizus,Pachyrhizus erosus
+522,Yellowfin_tuna,Aquatic foods,Fishes,8236,genbank,species,8236,Eukaryota,Chordata,Actinopteri,Scombriformes,Scombridae,Thunnus,Thunnus albacares
+523,Yellowtail amberjack,Aquatic foods,Fishes,302047,genbank,species,302047,Eukaryota,Chordata,Actinopteri,Carangiformes,Carangidae,Seriola,Seriola lalandi
+527,Atlantic halibut,Aquatic foods,Fishes,8267,genbank,species,8267,Eukaryota,Chordata,Actinopteri,Pleuronectiformes,Pleuronectidae,Hippoglossus,Hippoglossus hippoglossus
+528,Pacific_halibut,Aquatic foods,Fishes,195615,genbank,species,195615,Eukaryota,Chordata,Actinopteri,Pleuronectiformes,Pleuronectidae,Hippoglossus,Hippoglossus stenolepis
+533,Snow_crab,Aquatic foods,Crustaceans,41210,genbank,species,41210,Eukaryota,Arthropoda,Malacostraca,Decapoda,Majidae,Chionoecetes,Chionoecetes opilio
+534,Black-eyed pea,Pulses,Peas,3920,genbank,species,3917,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna unguiculata
+541,Domestic_goat,Animal foods,Caprae,9925,genbank,species,9925,Eukaryota,Chordata,Mammalia,Artiodactyla,Bovidae,Capra,Capra hircus
+542,Beefalo,Animal foods,Bovines,297284,genbank,species,297284,Eukaryota,Chordata,Mammalia,Artiodactyla,Bovidae,"",Bos taurus x Bison bison
+549,Domestic pig,Animal foods,Swine,9825,genbank,species,9823,Eukaryota,Chordata,Mammalia,Artiodactyla,Suidae,Sus,Sus scrofa
+550,Walrus,Aquatic foods,Pinnipeds,9707,genbank,species,9707,Eukaryota,Chordata,Mammalia,Carnivora,Odobenidae,Odobenus,Odobenus rosmarus
+552,Khorasan_wheat,Cereals and cereal products,Cereals,376534,genbank,species,4571,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Triticum,Triticum turgidum
+553,Vigna unguiculata subsp. sesquipedalis,Pulses,Peas,138955,genbank,species,3917,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna unguiculata
+560,Jew%27s_ear,Vegetables,Mushrooms,29892,genbank,species,29892,Eukaryota,Basidiomycota,Agaricomycetes,Auriculariales,Auriculariaceae,Auricularia,Auricularia auricula-judae
+561,Agaricus bisporus,Vegetables,Mushrooms,5341,genbank,species,5341,Eukaryota,Basidiomycota,Agaricomycetes,Agaricales,Agaricaceae,Agaricus,Agaricus bisporus
+562,Shiitake,Vegetables,Mushrooms,5353,genbank,species,5353,Eukaryota,Basidiomycota,Agaricomycetes,Agaricales,Omphalotaceae,Lentinula,Lentinula edodes
+564,Wakame,Aquatic foods,Seaweed,74381,genbank,species,74381,Eukaryota,"",Phaeophyceae,Laminariales,Alariaceae,Undaria,Undaria pinnatifida
+565,Enokitake,Vegetables,Mushrooms,38945,genbank,species,38945,Eukaryota,Basidiomycota,Agaricomycetes,Agaricales,Physalacriaceae,Flammulina,Flammulina velutipes
+566,Epazote,Herbs and Spices,Herbs,330163,genbank,species,330163,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Chenopodiaceae,Dysphania,Dysphania ambrosioides
+567,Oyster_mushroom,Vegetables,Mushrooms,5322,genbank,species,5322,Eukaryota,Basidiomycota,Agaricomycetes,Agaricales,Pleurotaceae,Pleurotus,Pleurotus ostreatus
+568,Cloud_ear_fungus,Vegetables,Mushrooms,29893,genbank,species,29893,Eukaryota,Basidiomycota,Agaricomycetes,Auriculariales,Auriculariaceae,Auricularia,Auricularia polytricha
+569,Maitake,Vegetables,Mushrooms,5627,genbank,species,5627,Eukaryota,Basidiomycota,Agaricomycetes,Polyporales,Grifolaceae,Grifola,Grifola frondosa
+582,Carp_bream,Aquatic foods,Fishes,38527,genbank,species,38527,Eukaryota,Chordata,Actinopteri,Cypriniformes,Leuciscidae,Abramis,Abramis brama
+583,Chanterelle,Vegetables,Mushrooms,36066,genbank,species,36066,Eukaryota,Basidiomycota,Agaricomycetes,Cantharellales,Cantharellaceae,Cantharellus,Cantharellus cibarius
+588,Common dab,Aquatic foods,Fishes,27771,genbank,species,27771,Eukaryota,Chordata,Actinopteri,Pleuronectiformes,Pleuronectidae,Limanda,Limanda limanda
+589,Spiny dogfish,Aquatic foods,Fishes,7797,genbank,species,7797,Eukaryota,Chordata,Chondrichthyes,Squaliformes,Squalidae,Squalus,Squalus acanthias
+595,Mountain_hare,Animal foods,Lagomorphs,62621,genbank,species,62621,Eukaryota,Chordata,Mammalia,Lagomorpha,Leporidae,Lepus,Lepus timidus
+596,Lake_trout,Aquatic foods,Fishes,8040,genbank,species,8040,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Salvelinus,Salvelinus namaycush
+604,Trisopterus esmarkii,Aquatic foods,Fishes,80723,genbank,species,80723,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Trisopterus,Trisopterus esmarkii
+607,Metroxylon_sagu,Herbs and Spices,Oilseed crops,93297,genbank,species,93297,Eukaryota,Streptophyta,Magnoliopsida,Arecales,Arecaceae,Metroxylon,Metroxylon sagu
+609,Pikeperch,Aquatic foods,Fishes,283035,genbank,species,283035,Eukaryota,Chordata,Actinopteri,Perciformes,Percidae,Sander,Sander lucioperca
+611,Rock_ptarmigan,Animal foods,Poultry,64668,genbank,species,64668,Eukaryota,Chordata,Aves,Galliformes,Phasianidae,Lagopus,Lagopus muta
+612,Pacific ocean perch,Aquatic foods,Fishes,72055,genbank,species,72055,Eukaryota,Chordata,Actinopteri,Perciformes,Sebastidae,Sebastes,Sebastes alutus
+616,Kombu,Aquatic foods,Seaweed,88149,genbank,species,88149,Eukaryota,"",Phaeophyceae,Laminariales,Laminariaceae,Saccharina,Saccharina japonica
+726,Green sea turtle,Aquatic foods,Other aquatic foods,8469,genbank,species,8469,Eukaryota,Chordata,"",Testudines,Cheloniidae,Chelonia,Chelonia mydas
+800,Shea_tree,Herbs and Spices,Oilseed crops,292385,genbank,species,292385,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Sapotaceae,Vitellaria,Vitellaria paradoxa
+801,Camellia_oleifera,Herbs and Spices,Oilseed crops,385388,genbank,species,385388,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Theaceae,Camellia,Camellia oleifera
+879,Capsicum_pubescens,Vegetables,Fruit vegetables,113210,genbank,species,113210,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,Capsicum pubescens
+881,Cabbage,Vegetables,Cabbages,3716,genbank,species,3712,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,Brassica oleracea
+882,Myrica rubra,Fruits,Berries,262757,genbank,species,262757,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Myricaceae,Morella,Morella rubra
+5,Allium haematochiton,Vegetables,Onion-family vegetables,4678,genbank,genus,4678,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,""
+9,Chives,Herbs and Spices,Herbs,74900,genbank,genus,4678,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium schoenoprasum
+13,Dill,Herbs and Spices,Herbs,40922,genbank,genus,40921,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Anethum,Anethum graveolens
+14,Custard apple,Fruits,Tropical fruits,301862,genbank,genus,13336,Eukaryota,Streptophyta,Magnoliopsida,Magnoliales,Annonaceae,Annona,Annona reticulata
+19,Artemisia_dracunculus,Herbs and Spices,Herbs,72341,genbank,genus,4219,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Artemisia,Artemisia dracunculus
+20,List of plants named mugwort,Herbs and Spices,Herbs,4220,genbank,genus,4219,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Artemisia,Artemisia vulgaris
+45,Chestnut,Nuts,Nuts,21019,genbank,genus,21019,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Fagaceae,Castanea,""
+50,Chinese_cinnamon,Herbs and Spices,Spices,119260,genbank,genus,13428,Eukaryota,Streptophyta,Magnoliopsida,Laurales,Lauraceae,Cinnamomum,Cinnamomum aromaticum
+51,Cinnamomum_verum,Herbs and Spices,Spices,128608,genbank,genus,13428,Eukaryota,Streptophyta,Magnoliopsida,Laurales,Lauraceae,Cinnamomum,Cinnamomum verum
+53,Citrus_aurantiifolia,Fruits,Citrus,159033,genbank,genus,2706,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,Citrus x aurantiifolia
+58,Coffee,Coffee and coffee products,Coffee,13442,genbank,genus,13442,Eukaryota,Streptophyta,Magnoliopsida,Gentianales,Rubiaceae,Coffea,""
+66,Cucurbita,Gourds,Gourds,3660,genbank,genus,3660,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Cucurbita,""
+78,Wax_apple,Fruits,Tropical fruits,119950,genbank,genus,119950,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Eugenia,""
+91,Ipomoea_aquatica,Vegetables,Leaf vegetables,89636,genbank,genus,4119,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Convolvulaceae,Ipomoea,Ipomoea aquatica
+104,Lupin,Pulses,Other pulses,3869,genbank,genus,3869,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Lupinus,""
+105,Apple,Fruits,Pomes,283210,genbank,genus,3749,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Malus,Malus pumila
+109,Mentha,Herbs and Spices,Herbs,21819,genbank,genus,21819,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Mentha,""
+110,Mentha_citrata,Herbs and Spices,Herbs,190902,genbank,genus,21819,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Mentha,Mentha aquatica
+111,Mentha arvensis,Herbs and Spices,Herbs,292239,genbank,genus,21819,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Mentha,Mentha arvensis
+112,Spearmint,Herbs and Spices,Herbs,29719,genbank,genus,21819,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Mentha,Mentha spicata
+113,Peppermint,Herbs and Spices,Herbs,34256,genbank,genus,21819,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Mentha,Mentha x piperita
+116,Mulberry,Fruits,Berries,3497,genbank,genus,3497,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Moraceae,Morus,""
+117,Black_mulberry,Fruits,Berries,85232,genbank,genus,3497,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Moraceae,Morus,Morus nigra
+119,Sweet_basil,Herbs and Spices,Herbs,39350,genbank,genus,39173,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Ocimum,Ocimum basilicum
+127,Poppy,Herbs and Spices,Oilseed crops,3468,genbank,genus,3468,Eukaryota,Streptophyta,Magnoliopsida,Ranunculales,Papaveraceae,Papaver,""
+136,Photinia_melanocarpa,Fruits,Berries,661339,genbank,genus,193297,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Aronia,Aronia melanocarpa
+138,Pine nut,Nuts,Nuts,3337,genbank,genus,3337,Eukaryota,Streptophyta,Pinopsida,Pinales,Pinaceae,Pinus,""
+139,Black pepper,Herbs and Spices,Spices,13216,genbank,genus,13215,Eukaryota,Streptophyta,Magnoliopsida,Piperales,Piperaceae,Piper,Piper nigrum
+143,Prunus,Fruits,Drupes,3754,genbank,genus,3754,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,""
+146,Prunus_cerasus,Fruits,Drupes,140311,genbank,genus,3754,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus cerasus
+147,Prunus_domestica,Fruits,Drupes,3758,genbank,genus,3754,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus domestica
+154,Rhubarb,Vegetables,Stalk vegetables,3621,genbank,genus,3620,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Polygonaceae,Rheum,Rheum rhabarbarum
+159,Rosemary,Herbs and Spices,Herbs,39367,genbank,genus,21880,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Salvia,Salvia rosmarinus
+160,Rubus,Fruits,Berries,23216,genbank,genus,23216,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Rubus,""
+161,Cloudberry,Fruits,Berries,57936,genbank,genus,23216,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Rubus,Rubus chamaemorus
+163,Black raspberry,Fruits,Berries,75079,genbank,genus,23216,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Rubus,Rubus occidentalis
+165,Common_sage,Herbs and Spices,Herbs,38868,genbank,genus,21880,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Salvia,Salvia officinalis
+173,"",Vegetables,Fruit vegetables,397755,genbank,genus,39702,Eukaryota,Ascomycota,Dothideomycetes,Mycosphaerellales,Mycosphaerellaceae,Septoria,Septoria lycopersici
+183,Thymus vulgaris,Herbs and Spices,Herbs,49992,genbank,genus,49990,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Thymus,Thymus vulgaris
+184,"",Herbs and Spices,Herbs,64580,genbank,genus,64580,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Tilia,""
+185,Tilia cordata,Herbs and Spices,Herbs,172266,genbank,genus,64580,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Tilia,Tilia cordata
+188,Vaccinium,Fruits,Berries,13749,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,""
+189,Lowbush_blueberry,Fruits,Berries,472369,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium angustifolium
+190,Sparkleberry,Fruits,Berries,229201,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium arboreum
+195,Vanilla,Herbs and Spices,Spices,51238,genbank,genus,51238,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Orchidaceae,Vanilla,""
+207,Rubus_arcticus,Fruits,Berries,70741,genbank,genus,23216,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Rubus,Rubus arcticus
+210,Vaccinium_elliottii,Fruits,Berries,283798,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium elliottii
+211,Vaccinium myrtilloides,Fruits,Berries,1503870,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium myrtilloides
+212,Vaccinium uliginosum,Fruits,Berries,190548,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium uliginosum
+216,Chinese_chives,Herbs and Spices,Herbs,4683,genbank,genus,4678,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium tuberosum
+217,Vaccinium oxycoccos,Fruits,Berries,516948,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium oxycoccos
+218,Vaccinium stamineum,Fruits,Berries,176259,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium stamineum
+220,Vaccinium deliciosum,Fruits,Berries,190531,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium deliciosum
+221,Vaccinium_ovalifolium,Fruits,Berries,190544,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium ovalifolium
+385,Alaska_blueberry,Fruits,Berries,190544,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium ovalifolium
+222,Vaccinium ovatum,Fruits,Berries,84019,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium ovatum
+223,Vaccinium parvifolium,Fruits,Berries,180766,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium parvifolium
+233,Capsicum,Vegetables,Fruit vegetables,4071,genbank,genus,4071,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Capsicum,""
+236,Zizania_aquatica,Cereals and cereal products,Cereals,75727,genbank,genus,15949,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Zizania,Zizania aquatica
+238,Thymus_pulegioides,Herbs and Spices,Herbs,751873,genbank,genus,49990,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Thymus,Thymus pulegioides
+240,Juglans ailantifolia,Nuts,Nuts,91209,genbank,genus,16718,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Juglandaceae,Juglans,Juglans ailanthifolia
+243,Shallot,Vegetables,Onion-family vegetables,1476995,genbank,genus,4678,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium ascalonicum
+248,"",Fruits,Berries,934696,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium angustifolium x Vaccinium corymbosum
+255,"",Fruits,Citrus,37656,genbank,genus,2706,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,Citrus x paradisi
+256,Grapefruit,Fruits,Citrus,37656,genbank,genus,2706,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,Citrus x paradisi
+280,Abalone,Aquatic foods,Mollusks,6452,genbank,genus,6452,Eukaryota,Mollusca,Gastropoda,Lepetellida,Haliotidae,Haliotis,""
+283,Acorn,Nuts,Nuts,3511,genbank,genus,3511,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Fagaceae,Quercus,""
+287,Alfalfa,Herbs and Spices,Herbs,3879,genbank,genus,3877,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Medicago,Medicago sativa
+289,Amaranth,Herbs and Spices,Herbs,3564,genbank,genus,3564,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Amaranthaceae,Amaranthus,""
+295,Painted comber,Aquatic foods,Fishes,349661,genbank,genus,94952,Eukaryota,Chordata,Actinopteri,Perciformes,Serranidae,Serranus,Serranus scriba
+301,Beech,Nuts,Nuts,21024,genbank,genus,21024,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Fagaceae,Fagus,""
+312,Breadfruit,Fruits,Tropical fruits,194251,genbank,genus,3488,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Moraceae,Artocarpus,Artocarpus altilis
+339,Coregonus_artedi,Aquatic foods,Fishes,36181,genbank,genus,27772,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Coregonus,Coregonus artedi
+346,Cottonseed,Herbs and Spices,Oilseed crops,3633,genbank,genus,3633,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Gossypium,""
+347,Vigna_unguiculata_subsp._cylindrica,Pulses,Peas,3840,genbank,genus,3913,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna cylindrica
+348,Malus,Fruits,Pomes,3749,genbank,genus,3749,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Malus,""
+353,Mule deer,Animal foods,Venison,9871,genbank,genus,9871,Eukaryota,Chordata,Mammalia,Artiodactyla,Cervidae,Odocoileus,""
+354,"",Aquatic foods,Fishes,8095,genbank,genus,8095,Eukaryota,Chordata,Actinopteri,Perciformes,Cottidae,Myoxocephalus,""
+362,Freshwater_eel,Aquatic foods,Fishes,7935,genbank,genus,7935,Eukaryota,Chordata,Actinopteri,Anguilliformes,Anguillidae,Anguilla,""
+363,Elderberry,Fruits,Berries,4201,genbank,genus,4201,Eukaryota,Streptophyta,Magnoliopsida,Dipsacales,Adoxaceae,Sambucus,""
+368,Castanea sativa,Nuts,Nuts,21020,genbank,genus,21019,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Fagaceae,Castanea,Castanea sativa
+371,Florida pompano,Aquatic foods,Fishes,173342,genbank,genus,173330,Eukaryota,Chordata,Actinopteri,Carangiformes,Carangidae,Trachinotus,Trachinotus carolinus
+373,Greylag_goose,Animal foods,Poultry,8843,genbank,genus,8842,Eukaryota,Chordata,Aves,Anseriformes,Anatidae,Anser,Anser anser
+374,Grape,Fruits,Berries,3603,genbank,genus,3603,Eukaryota,Streptophyta,Magnoliopsida,Vitales,Vitaceae,Vitis,""
+377,Grouper,Aquatic foods,Fishes,94231,genbank,genus,94231,Eukaryota,Chordata,Actinopteri,Perciformes,Serranidae,Epinephelus,""
+380,Hippoglossus,Aquatic foods,Fishes,8266,genbank,genus,8266,Eukaryota,Chordata,Actinopteri,Pleuronectiformes,Pleuronectidae,Hippoglossus,""
+381,Hazelnut,Nuts,Nuts,13450,genbank,genus,13450,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Betulaceae,Corylus,""
+382,Hickory_nut,Nuts,Nuts,13402,genbank,genus,13402,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Juglandaceae,Carya,""
+388,Pacific jack mackerel,Aquatic foods,Fishes,271940,genbank,genus,36211,Eukaryota,Chordata,Actinopteri,Carangiformes,Carangidae,Trachurus,Trachurus symmetricus
+391,Syzgium_cumini,Fruits,Tropical fruits,260142,genbank,genus,178174,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Syzygium,Syzygium cumini
+393,Jujube,Fruits,Other fruits,48393,genbank,genus,72171,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rhamnaceae,Ziziphus,Ziziphus sp.
+398,Kumquat,Fruits,Tropical fruits,2706,genbank,genus,2706,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,""
+401,Allium_ampeloprasum,Vegetables,Onion-family vegetables,4681,genbank,genus,4678,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Amaryllidaceae,Allium,Allium ampeloprasum
+406,Nelumbo,Herbs and Spices,Other seeds,4430,genbank,genus,4430,Eukaryota,Streptophyta,Magnoliopsida,Proteales,Nelumbonaceae,Nelumbo,""
+416,Moth bean,Pulses,Beans,3918,genbank,genus,3913,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Vigna,Vigna aconitifolia
+417,Dioscorea pentaphylla,Vegetables,Tubers,167592,genbank,genus,4672,Eukaryota,Streptophyta,Magnoliopsida,Dioscoreales,Dioscoreaceae,Dioscorea,Dioscorea pentaphylla
+426,Vaccinium reticulatum,Fruits,Berries,180767,genbank,genus,13749,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Vaccinium,Vaccinium reticulatum
+431,Spotted_seal,Aquatic foods,Pinnipeds,39090,genbank,genus,9717,Eukaryota,Chordata,Mammalia,Carnivora,Phocidae,Phoca,Phoca largha
+432,Pacific herring,Aquatic foods,Fishes,30724,genbank,genus,7949,Eukaryota,Chordata,Actinopteri,Clupeiformes,Clupeidae,Clupea,Clupea pallasii
+434,Sebastes,Aquatic foods,Fishes,34820,genbank,genus,34820,Eukaryota,Chordata,Actinopteri,Perciformes,Sebastidae,Sebastes,""
+437,Common_Persimmon,Fruits,Tropical fruits,13493,genbank,genus,13492,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ebenaceae,Diospyros,Diospyros virginiana
+441,Colorado_Pinyon,Nuts,Nuts,3340,genbank,genus,3337,Eukaryota,Streptophyta,Pinopsida,Pinales,Pinaceae,Pinus,Pinus edulis
+444,Musa × paradisiaca,Fruits,Tropical fruits,89151,genbank,genus,4640,Eukaryota,Streptophyta,Magnoliopsida,Zingiberales,Musaceae,Musa,Musa x paradisiaca
+451,European_rabbit,Animal foods,Lagomorphs,9984,genbank,genus,9984,Eukaryota,Chordata,Mammalia,Lagomorpha,Leporidae,Oryctolagus,""
+453,Rainbow smelt,Aquatic foods,Fishes,8014,genbank,genus,8013,Eukaryota,Chordata,Actinopteri,Osmeriformes,Osmeridae,Osmerus,Osmerus mordax
+456,Rose hip,Herbs and Spices,Herbs,3764,genbank,genus,3764,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Rosa,""
+466,Salmonberry,Fruits,Berries,59499,genbank,genus,23216,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Rubus,Rubus spectabilis
+485,Hedge_mustard,Herbs and Spices,Other seeds,3729,genbank,genus,3729,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Sisymbrium,""
+488,Soursop,Fruits,Tropical fruits,13337,genbank,genus,13336,Eukaryota,Streptophyta,Magnoliopsida,Magnoliales,Annonaceae,Annona,Annona muricata
+489,Spelt,Cereals and cereal products,Cereals,58933,genbank,genus,4564,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Triticum,Triticum spelta
+491,Squab_(food),Animal foods,Poultry,8931,genbank,genus,8931,Eukaryota,Chordata,Aves,Columbiformes,Columbidae,Columba,""
+493,Strawberry_guava,Fruits,Berries,375274,genbank,genus,120289,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Psidium,Psidium cattleyanum
+494,"",Aquatic foods,Fishes,7901,genbank,genus,7901,Eukaryota,Chordata,Actinopteri,Acipenseriformes,Acipenseridae,Acipenser,""
+496,Sugar_apple,Fruits,Tropical fruits,301693,genbank,genus,13336,Eukaryota,Streptophyta,Magnoliopsida,Magnoliales,Annonaceae,Annona,Annona squamosa
+513,Broad whitefish,Aquatic foods,Fishes,348707,genbank,genus,27772,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Coregonus,Coregonus nasus
+514,Coregonus,Aquatic foods,Fishes,27772,genbank,genus,27772,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Coregonus,""
+516,Wild_rice,Cereals and cereal products,Cereals,15949,genbank,genus,15949,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Zizania,""
+517,Salix pulchra,Herbs and Spices,Herbs,669814,genbank,genus,40685,Eukaryota,Streptophyta,Magnoliopsida,Malpighiales,Salicaceae,Salix,Salix pulchra
+519,Yam_(vegetable),Vegetables,Tubers,4672,genbank,genus,4672,Eukaryota,Streptophyta,Magnoliopsida,Dioscoreales,Dioscoreaceae,Dioscorea,""
+524,Pollock,Aquatic foods,Fishes,8059,genbank,genus,8059,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Pollachius,""
+525,Albacore_tuna,Aquatic foods,Fishes,8235,genbank,genus,8234,Eukaryota,Chordata,Actinopteri,Scombriformes,Scombridae,Thunnus,Thunnus alalunga
+526,Gadus,Aquatic foods,Fishes,8048,genbank,genus,8048,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Gadus,""
+529,Pacific_salmon,Aquatic foods,Fishes,8016,genbank,genus,8016,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Oncorhynchus,""
+536,Macadamia_nut,Nuts,Nuts,4329,genbank,genus,4329,Eukaryota,Streptophyta,Magnoliopsida,Proteales,Proteaceae,Macadamia,""
+557,Persian_lime,Fruits,Citrus,200541,genbank,genus,2706,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Rutaceae,Citrus,Citrus x latifolia
+575,Wheat,Cereals and cereal products,Cereals,4564,genbank,genus,4564,Eukaryota,Streptophyta,Magnoliopsida,Poales,Poaceae,Triticum,""
+576,Common_chokecherry,Fruits,Drupes,133204,genbank,genus,3754,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus virginiana
+577,Agave,Vegetables,Other vegetables,39509,genbank,genus,39509,Eukaryota,Streptophyta,Magnoliopsida,Asparagales,Asparagaceae,Agave,""
+578,Narrowleaf_cattail,Vegetables,Other vegetables,59011,genbank,genus,4732,Eukaryota,Streptophyta,Magnoliopsida,Poales,Typhaceae,Typha,Typha angustifolia
+585,Salvelinus,Aquatic foods,Fishes,8033,genbank,genus,8033,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Salvelinus,""
+586,Cinnamon,Herbs and Spices,Spices,13428,genbank,genus,13428,Eukaryota,Streptophyta,Magnoliopsida,Laurales,Lauraceae,Cinnamomum,""
+602,Norway_haddock,Aquatic foods,Fishes,394708,genbank,genus,34820,Eukaryota,Chordata,Actinopteri,Perciformes,Sebastidae,Sebastes,Sebastes viviparus
+605,"",Herbs and Spices,Oilseed crops,51952,genbank,genus,51952,Eukaryota,Streptophyta,Magnoliopsida,Arecales,Arecaceae,Elaeis,""
+608,Persimmon,Fruits,Tropical fruits,13492,genbank,genus,13492,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ebenaceae,Diospyros,""
+621,Thunnus,Aquatic foods,Fishes,8234,genbank,genus,8234,Eukaryota,Chordata,Actinopteri,Scombriformes,Scombridae,Thunnus,""
+622,Walnut,Nuts,Nuts,16718,genbank,genus,16718,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Juglandaceae,Juglans,""
+786,Horned_melon,Gourds,Gourds,61886,genbank,genus,3655,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Cucumis,Cucumis metuliferus
+799,Cupuaçu,Herbs and Spices,Oilseed crops,108881,genbank,genus,3640,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Theobroma,Theobroma grandiflorum
+814,Solanum_quitoense,Fruits,Tropical fruits,227725,genbank,genus,4107,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Solanum,Solanum quitoense
+863,Nuphar_lutea,Herbs and Spices,Herbs,77113,genbank,genus,4415,Eukaryota,Streptophyta,Magnoliopsida,Nymphaeales,Nymphaeaceae,Nuphar,Nuphar lutea
+887,Brassica,Vegetables,Brassicas,3705,genbank,genus,3705,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Brassica,""
+917,Prunus tomentosa,Fruits,Berries,105667,genbank,genus,3754,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Prunus,Prunus tomentosa
+1,Angelica,Herbs and Spices,Herbs,357850,nucleotide,species,357850,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Angelica,Angelica keiskei
+18,Horseradish,Herbs and Spices,Spices,3704,nucleotide,species,3704,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Brassicaceae,Armoracia,Armoracia rusticana
+23,Averrhoa carambola,Fruits,Tropical fruits,28974,nucleotide,species,28974,Eukaryota,Streptophyta,Magnoliopsida,Oxalidales,Oxalidaceae,Averrhoa,Averrhoa carambola
+24,Brazil nut,Nuts,Nuts,3645,nucleotide,species,3645,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Lecythidaceae,Bertholletia,Bertholletia excelsa
+26,Borage,Herbs and Spices,Oilseed crops,13363,nucleotide,species,13363,Eukaryota,Streptophyta,Magnoliopsida,Boraginales,Boraginaceae,Borago,Borago officinalis
+39,Capers,Herbs and Spices,Spices,65558,nucleotide,species,65558,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Capparaceae,Capparis,Capparis spinosa
+43,Caraway,Herbs and Spices,Spices,48032,nucleotide,species,48032,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Carum,Carum carvi
+46,Chamaemelum nobile,Herbs and Spices,Herbs,99037,nucleotide,species,99037,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Chamaemelum,Chamaemelum nobile
+61,Coriander,Herbs and Spices,Herbs,4047,nucleotide,species,4047,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Coriandrum,Coriandrum sativum
+67,Cumin,Herbs and Spices,Spices,52462,nucleotide,species,52462,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Cuminum,Cuminum cyminum
+75,Empetrum nigrum,Fruits,Berries,191066,nucleotide,species,191066,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Ericaceae,Empetrum,Empetrum nigrum
+76,Loquat,Fruits,Tropical fruits,32224,nucleotide,species,32224,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Eriobotrya,Eriobotrya japonica
+89,Hyssop,Herbs and Spices,Herbs,39324,nucleotide,species,39324,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Dracocephalum,Dracocephalum officinale
+90,Illicium verum,Herbs and Spices,Spices,124778,nucleotide,species,124778,Eukaryota,Streptophyta,Magnoliopsida,Austrobaileyales,Schisandraceae,Illicium,Illicium verum
+97,Sweet_bay,Herbs and Spices,Herbs,85223,nucleotide,species,85223,Eukaryota,Streptophyta,Magnoliopsida,Laurales,Lauraceae,Laurus,Laurus nobilis
+98,Lentils,Pulses,Lentils,3864,nucleotide,species,3864,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Lens,Lens culinaris
+100,Lovage,Herbs and Spices,Herbs,48042,nucleotide,species,48042,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Levisticum,Levisticum officinale
+107,Matricaria chamomilla,Herbs and Spices,Herbs,127986,nucleotide,species,98504,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Matricaria,Matricaria chamomilla
+108,Melissa officinalis,Herbs and Spices,Herbs,39338,nucleotide,species,39338,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Melissa,Melissa officinalis
+114,Medlar,Fruits,Pomes,36616,nucleotide,species,36616,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Mespilus,Mespilus germanica
+118,Nutmeg,Herbs and Spices,Spices,51089,nucleotide,species,51089,Eukaryota,Streptophyta,Magnoliopsida,Magnoliales,Myristicaceae,Myristica,Myristica fragrans
+122,Sweet_marjoram,Herbs and Spices,Herbs,268884,nucleotide,species,268884,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Origanum,Origanum majorana
+124,Oregano,Herbs and Spices,Herbs,39352,nucleotide,species,39352,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Origanum,Origanum vulgare
+129,Parsnip,Vegetables,Root vegetables,4041,nucleotide,species,4041,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Pastinaca,Pastinaca sativa
+131,Parsley,Herbs and Spices,Herbs,4043,nucleotide,species,4043,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Petroselinum,Petroselinum crispum
+155,Blackcurrant,Fruits,Berries,78511,nucleotide,species,78511,Eukaryota,Streptophyta,Magnoliopsida,Saxifragales,Grossulariaceae,Ribes,Ribes nigrum
+156,Redcurrant,Fruits,Berries,175228,nucleotide,species,175228,Eukaryota,Streptophyta,Magnoliopsida,Saxifragales,Grossulariaceae,Ribes,Ribes rubrum
+157,Gooseberry,Fruits,Berries,135518,nucleotide,species,135518,Eukaryota,Streptophyta,Magnoliopsida,Saxifragales,Grossulariaceae,Ribes,Ribes uva-crispa
+158,Watercress,Herbs and Spices,Herbs,135518,nucleotide,species,135518,Eukaryota,Streptophyta,Magnoliopsida,Saxifragales,Grossulariaceae,Ribes,Ribes uva-crispa
+164,Sorrel,Herbs and Spices,Herbs,41241,nucleotide,species,41241,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Polygonaceae,Rumex,Rumex acetosa
+168,Winter savory,Herbs and Spices,Herbs,49988,nucleotide,species,49988,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Satureja,Satureja montana
+176,Rowanberry,Fruits,Berries,36599,nucleotide,species,36599,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Sorbus,Sorbus aucuparia
+180,Tamarind,Fruits,Tropical fruits,58860,nucleotide,species,58860,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Tamarindus,Tamarindus indica
+181,Dandelion,Herbs and Spices,Herbs,50225,nucleotide,species,50225,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Taraxacum,Taraxacum officinale
+186,Fenugreek,Herbs and Spices,Herbs,78534,nucleotide,species,78534,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Trigonella,Trigonella foenum-graecum
+281,Crateva religiosa,Fruits,Tropical fruits,202634,nucleotide,species,202634,Eukaryota,Streptophyta,Magnoliopsida,Brassicales,Capparaceae,Crateva,Crateva religiosa
+288,Allspice,Herbs and Spices,Spices,375272,nucleotide,species,375272,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Pimenta,Pimenta dioica
+297,Atlantic wolffish,Aquatic foods,Fishes,8204,nucleotide,species,8204,Eukaryota,Chordata,Actinopteri,Perciformes,Anarhichadidae,Anarhichas,Anarhichas lupus
+309,Bluefish,Aquatic foods,Fishes,75034,nucleotide,species,75034,Eukaryota,Chordata,Actinopteri,Scombriformes,Pomatomidae,Pomatomus,Pomatomus saltatrix
+311,Bowhead whale,Aquatic foods,Cetaceans,27602,nucleotide,species,27602,Eukaryota,Chordata,Mammalia,Artiodactyla,Balaenidae,Balaena,Balaena mysticetus
+318,Petasites japonicus,Vegetables,Other vegetables,186965,nucleotide,species,186965,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Petasites,Petasites japonicus
+319,American butterfish,Aquatic foods,Fishes,183653,nucleotide,species,183653,Eukaryota,Chordata,Actinopteri,Scombriformes,Stromateidae,Peprilus,Peprilus triacanthus
+325,Carissa macrocarpa,Fruits,Tropical fruits,403101,nucleotide,species,403101,Eukaryota,Streptophyta,Magnoliopsida,Gentianales,Apocynaceae,Carissa,Carissa macrocarpa
+330,Chayote,Gourds,Gourds,184140,nucleotide,species,184140,Eukaryota,Streptophyta,Magnoliopsida,Cucurbitales,Cucurbitaceae,Sicyos,Sicyos edulis
+332,Chervil,Herbs and Spices,Spices,40888,nucleotide,species,40888,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Anthriscus,Anthriscus cerefolium
+337,Chinese_water_chestnut,Vegetables,Other vegetables,110284,nucleotide,species,110284,Eukaryota,Streptophyta,Magnoliopsida,Poales,Cyperaceae,Eleocharis,Eleocharis dulcis
+345,Valerianella locusta,Vegetables,Leaf vegetables,59166,nucleotide,species,59166,Eukaryota,Streptophyta,Magnoliopsida,Dipsacales,Caprifoliaceae,Valerianella,Valerianella locusta
+350,Atlantic croaker,Aquatic foods,Fishes,29154,nucleotide,species,29154,Eukaryota,Chordata,Actinopteri,"",Sciaenidae,Micropogonias,Micropogonias undulatus
+356,Dolphin_fish,Aquatic foods,Fishes,34814,nucleotide,species,34814,Eukaryota,Chordata,Actinopteri,Carangiformes,Coryphaenidae,Coryphaena,Coryphaena hippurus
+357,Freshwater_drum,Aquatic foods,Fishes,225389,nucleotide,species,225389,Eukaryota,Chordata,Actinopteri,"",Sciaenidae,Aplodinotus,Aplodinotus grunniens
+397,King_mackerel,Aquatic foods,Fishes,13679,nucleotide,species,13679,Eukaryota,Chordata,Actinopteri,Scombriformes,Scombridae,Scomberomorus,Scomberomorus cavalla
+409,Basella alba,Vegetables,Leaf vegetables,3589,nucleotide,species,3589,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Basellaceae,Basella,Basella alba
+411,Purple_mangosteen,Fruits,Tropical fruits,58228,nucleotide,species,58228,Eukaryota,Streptophyta,Magnoliopsida,Malpighiales,Clusiaceae,Garcinia,Garcinia mangostana
+422,Tetragonia tetragonioides,Vegetables,Leaf vegetables,45318,nucleotide,species,45318,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Aizoaceae,Tetragonia,Tetragonia tetragonoides
+427,Okra,Vegetables,Other vegetables,455045,nucleotide,species,455045,Eukaryota,Streptophyta,Magnoliopsida,Malvales,Malvaceae,Abelmoschus,Abelmoschus esculentus
+443,Opuntia_macrorhiza,Fruits,Tropical fruits,1041245,nucleotide,species,1041245,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Cactaceae,Opuntia,Opuntia macrorhiza
+445,Phytolacca americana,Vegetables,Shoot vegetables,3527,nucleotide,species,3527,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Phytolaccaceae,Phytolacca,Phytolacca americana
+448,Psoralea esculenta,Vegetables,Root vegetables,458363,nucleotide,species,458363,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Pediomelum,Pediomelum esculentum
+468,Sapodilla Cayes,Fruits,Tropical fruits,3741,nucleotide,species,3741,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Sapotaceae,Manilkara,Manilkara zapota
+470,Spanish mackerel,Aquatic foods,Fishes,99344,nucleotide,species,99344,Eukaryota,Chordata,Actinopteri,Scombriformes,Scombridae,Scomberomorus,Scomberomorus maculatus
+471,Pacific_sardine,Aquatic foods,Fishes,28381,nucleotide,species,28381,Eukaryota,Chordata,Actinopteri,Clupeiformes,Clupeidae,Sardinops,Sardinops sagax
+473,Scup,Aquatic foods,Fishes,35579,nucleotide,species,35579,Eukaryota,Chordata,Actinopteri,Spariformes,Sparidae,Stenotomus,Stenotomus chrysops
+476,Bearded_seal,Aquatic foods,Pinnipeds,39304,nucleotide,species,39304,Eukaryota,Chordata,Mammalia,Carnivora,Phocidae,Erignathus,Erignathus barbatus
+482,Stenodus leucichthys,Aquatic foods,Fishes,59296,nucleotide,species,59296,Eukaryota,Chordata,Actinopteri,Salmoniformes,Salmonidae,Stenodus,Stenodus leucichthys
+486,Skipjack tuna,Aquatic foods,Fishes,8226,nucleotide,species,8226,Eukaryota,Chordata,Actinopteri,Scombriformes,Scombridae,Katsuwonus,Katsuwonus pelamis
+495,White_sucker,Aquatic foods,Fishes,7971,nucleotide,species,7971,Eukaryota,Chordata,Actinopteri,Cypriniformes,Catostomidae,Catostomus,Catostomus commersonii
+502,Mexican_Groundcherry,Vegetables,Fruit vegetables,374021,nucleotide,species,304130,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Physalis,Physalis philadelphica
+518,Winged bean,Pulses,Beans,3891,nucleotide,species,3891,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Psophocarpus,Psophocarpus tetragonolobus
+521,Xanthosoma sagittifolium,Vegetables,Leaf vegetables,28478,nucleotide,species,28478,Eukaryota,Streptophyta,Magnoliopsida,Alismatales,Araceae,Xanthosoma,Xanthosoma sagittifolium
+551,"",Vegetables,Stalk vegetables,125586,nucleotide,species,125586,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Polygonaceae,Koenigia,Koenigia alpina
+558,Feijoa,Fruits,Tropical fruits,260130,nucleotide,species,260130,Eukaryota,Streptophyta,Magnoliopsida,Myrtales,Myrtaceae,Acca,Acca sellowiana
+570,Ostrich_fern,Vegetables,Leaf vegetables,3277,nucleotide,species,3277,Eukaryota,Streptophyta,Polypodiopsida,Polypodiales,Onocleaceae,Matteuccia,Matteuccia struthiopteris
+571,Spot croaker,Aquatic foods,Fishes,59837,nucleotide,species,59837,Eukaryota,Chordata,Actinopteri,"",Sciaenidae,Leiostomus,Leiostomus xanthurus
+574,Atlantic menhaden,Aquatic foods,Fishes,224708,nucleotide,species,224708,Eukaryota,Chordata,Actinopteri,Clupeiformes,Clupeidae,Brevoortia,Brevoortia tyrannus
+581,Blue whiting,Aquatic foods,Fishes,81636,nucleotide,species,81636,Eukaryota,Chordata,Actinopteri,Gadiformes,Gadidae,Micromesistius,Micromesistius poutassou
+597,Lemon sole,Aquatic foods,Fishes,106175,nucleotide,species,106175,Eukaryota,Chordata,Actinopteri,Pleuronectiformes,Pleuronectidae,Microstomus,Microstomus kitt
+603,Norway_lobster,Aquatic foods,Crustaceans,6829,nucleotide,species,6829,Eukaryota,Arthropoda,Malacostraca,Decapoda,Nephropidae,Nephrops,Nephrops norvegicus
+798,Attalea_speciosa,Herbs and Spices,Oilseed crops,145700,nucleotide,species,145700,Eukaryota,Streptophyta,Magnoliopsida,Arecales,Arecaceae,Attalea,Attalea speciosa
+813,Byrsonima_crassifolia,Fruits,Tropical fruits,4270,nucleotide,species,4270,Eukaryota,Streptophyta,Magnoliopsida,Malpighiales,Malpighiaceae,Byrsonima,Byrsonima crassifolia
+916,Amelanchier alnifolia,Fruits,Berries,32219,nucleotide,species,32219,Eukaryota,Streptophyta,Magnoliopsida,Rosales,Rosaceae,Amelanchier,Amelanchier alnifolia
+10,Aloysia citrodora,Herbs and Spices,Herbs,542672,nucleotide,genus,105887,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Verbenaceae,Aloysia,Aloysia triphylla
+123,Pot_marjoram,Herbs and Spices,Herbs,452416,nucleotide,genus,39174,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Origanum,Origanum onites
+137,Anise,Herbs and Spices,Herbs,271192,nucleotide,genus,40958,Eukaryota,Streptophyta,Magnoliopsida,Apiales,Apiaceae,Pimpinella,Pimpinella anisum
+167,Summer_savory,Herbs and Spices,Herbs,49987,nucleotide,genus,49986,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Satureja,Satureja hortensis
+209,Bayberry,Fruits,Berries,3509,nucleotide,genus,3509,Eukaryota,Streptophyta,Magnoliopsida,Fagales,Myricaceae,Myrica,""
+213,Buffalo_currant,Fruits,Berries,23283,nucleotide,genus,3801,Eukaryota,Streptophyta,Magnoliopsida,Saxifragales,Grossulariaceae,Ribes,Ribes aureum
+259,"",Herbs and Spices,Herbs,1384207,nucleotide,genus,39174,Eukaryota,Streptophyta,Magnoliopsida,Lamiales,Lamiaceae,Origanum,Origanum x majoricum
+267,Ribes glandulosum,Fruits,Berries,175226,nucleotide,genus,3801,Eukaryota,Streptophyta,Magnoliopsida,Saxifragales,Grossulariaceae,Ribes,Ribes glandulosum
+282,Malpighia emarginata,Fruits,Tropical fruits,151847,nucleotide,genus,17047,Eukaryota,Streptophyta,Magnoliopsida,Malpighiales,Malpighiaceae,Malpighia,Malpighia emarginata
+285,Agar,Aquatic foods,Seaweed,31444,nucleotide,genus,31444,Eukaryota,Rhodophyta,Florideophyceae,Gigartinales,Solieriaceae,Eucheuma,""
+290,Sagittaria_latifolia,Vegetables,Tubers,15008,nucleotide,genus,4450,Eukaryota,Streptophyta,Magnoliopsida,Alismatales,Alismataceae,Sagittaria,Sagittaria latifolia
+291,Maranta_arundinacea,Vegetables,Tubers,210060,nucleotide,genus,16300,Eukaryota,Streptophyta,Magnoliopsida,Zingiberales,Marantaceae,Maranta,Maranta arundinacea
+349,Squashberry,Fruits,Berries,237934,nucleotide,genus,4204,Eukaryota,Streptophyta,Magnoliopsida,Dipsacales,Adoxaceae,Viburnum,Viburnum edule
+355,Rumex,Herbs and Spices,Herbs,3618,nucleotide,genus,3618,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Polygonaceae,Rumex,""
+376,Groundcherry,Vegetables,Fruit vegetables,24663,nucleotide,genus,24663,Eukaryota,Streptophyta,Magnoliopsida,Solanales,Solanaceae,Physalis,""
+396,Kelp,Aquatic foods,Seaweed,33637,nucleotide,genus,33637,Eukaryota,"",Phaeophyceae,Laminariales,Laminariaceae,Laminaria,""
+412,Hedysarum alpinum,Vegetables,Root vegetables,57576,nucleotide,genus,47034,Eukaryota,Streptophyta,Magnoliopsida,Fabales,Fabaceae,Hedysarum,Hedysarum alpinum
+424,Ocean pout,Aquatic foods,Fishes,8199,nucleotide,genus,48415,Eukaryota,Chordata,Actinopteri,Perciformes,Zoarcidae,Zoarces,Zoarces americanus
+440,Pili_nut,Nuts,Nuts,43691,nucleotide,genus,43690,Eukaryota,Streptophyta,Magnoliopsida,Sapindales,Burseraceae,Canarium,Canarium ovatum
+449,Opuntia,Fruits,Tropical fruits,106975,nucleotide,genus,106975,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Cactaceae,Opuntia,""
+467,Tragopogon porrifolius,Vegetables,Root vegetables,13731,nucleotide,genus,13730,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Tragopogon,Tragopogon porrifolius
+469,Pouteria sapota,Fruits,Tropical fruits,233744,nucleotide,genus,85249,Eukaryota,Streptophyta,Magnoliopsida,Ericales,Sapotaceae,Pouteria,Pouteria sapota
+478,"",Aquatic foods,Fishes,13028,nucleotide,genus,13028,Eukaryota,Chordata,Actinopteri,"",Sciaenidae,Cynoscion,""
+484,Archosargus_probatocephalus,Aquatic foods,Fishes,119682,nucleotide,genus,119681,Eukaryota,Chordata,Actinopteri,Spariformes,Sparidae,Archosargus,Archosargus probatocephalus
+572,Rumex_arcticus,Herbs and Spices,Herbs,395311,nucleotide,genus,3618,Eukaryota,Streptophyta,Magnoliopsida,Caryophyllales,Polygonaceae,Rumex,Rumex arcticus
+620,Thistle,Vegetables,Root vegetables,41549,nucleotide,genus,41549,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Cirsium,""
+849,Thelesperma,Teas,Herbal teas,153159,nucleotide,genus,153159,Eukaryota,Streptophyta,Magnoliopsida,Asterales,Asteraceae,Thelesperma,""
