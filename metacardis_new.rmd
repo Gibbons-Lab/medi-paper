@@ -1,0 +1,237 @@
+# METACARDIS MEDIC study
+
+We start by reading in the metadata from METACARDIS using the SI from https://www.nature.com/articles/s41591-022-01688-4.
+
+```{r}
+library(data.table)
+library(readxl)
+
+meta <- read_excel("metacardis/data/41591_2022_1688_MOESM3_ESM.xlsx", "ST14", skip=1) |> 
+  as.data.table() |> unique(by="ID")
+meta[, "sample_id" := paste0("M0", ID)]
+meta[, "group" := "IHD"]
+meta[grepl("HC", Status), group:="HC"]
+meta[, "group" := factor(group, levels=c("HC", "IHD"))]
+meta
+```
+
+Now we read in the food abundances and contents and select the relevant metadata.
+
+```{r}
+foods <- fread("metacardis/data/food_abundance.csv")[sample_id %chin% meta$sample_id]
+contents <- fread("metacardis/data/food_content.csv")[sample_id %chin% meta$sample_id]
+meta <- meta[sample_id %chin% foods$sample_id]
+meta[, table(Status)]
+```
+
+Nice, lets build up the phyloseq objects now. First, for the food abundance.
+
+```{r}
+library(phyloseq)
+
+foods[species == "", species := paste0(genus, " spp.")]
+counts <- dcast(foods, sample_id ~ species, value.var="reads", fill=0, fun.aggregate=sum)
+sids <- counts[, sample_id]
+counts <- as.matrix(counts[, "sample_id" := NULL])
+rownames(counts) <- sids
+taxa <- unique(foods[, .(food_group, food_subgroup, kingdom, phylum, class, order, genus, species)], by="species") |> as.matrix()
+rownames(taxa) <- taxa[, "species"]
+sdata <- as.data.frame(meta)
+rownames(sdata) <- sdata$sample_id
+
+food_ps <- phyloseq(
+  otu_table(counts, taxa_are_rows=FALSE),
+  tax_table(taxa),
+  sample_data(sdata)
+)
+food_ps
+```
+
+And now for the contents.
+
+```{r}
+contents[, "id" := paste0(source_type, "_", trimws(compound_id))]
+abund <- dcast(contents, sample_id ~ id, value.var="abundance", fill=0, fun.aggregate = sum)
+sids <- abund[, sample_id]
+abund <- as.matrix(abund[, "sample_id" := NULL])
+rownames(abund) <- sids
+compounds <- unique(contents[, .(source_type, kingdom, superclass, class, subclass, name, id)]) |> as.matrix()
+rownames(compounds) <- compounds[, "id"]
+s <- sdata[rownames(abund), ]
+
+content_ps <- phyloseq(
+  otu_table(log10(abund+1e-3), taxa_are_rows=FALSE),
+  tax_table(compounds[colnames(abund), ]),
+  sample_data(s)
+)
+content_ps
+```
+
+## Overview
+
+```{r, fig.width=12, fig.height=12}
+library(ComplexHeatmap)
+library(viridis)
+
+rm <- colMeans(counts)
+good <- rm > 1
+groups <- HeatmapAnnotation(group=sample_data(food_ps)$group, which="col", col=list(group=c(HC="white", IHD="tomato")))
+gcols <- colorspace::qualitative_hcl(uniqueN(taxa[, "food_group"]), "Dark2")
+names(gcols) <- unique(taxa[, "food_group"]) |> sort()
+food_groups <- HeatmapAnnotation(`food group` = taxa[colnames(counts[, good]), "food_group"], which="row", col=as.list(gcols))
+
+Heatmap(
+  log10(counts[, good]+1) |> t(), 
+  col=viridis(100), 
+  top_annotation = groups, 
+  left_annotation = food_groups,
+  show_row_names = TRUE, show_column_names = FALSE,
+  row_title = "species", column_title = "samples",
+  name="abundance [log-scale]", raster_quality=2, raster_resize_mat = T
+)
+```
+
+```{r, fig.width=10, fig.height=10}
+groups <- HeatmapAnnotation(group=sample_data(content_ps)$Status, which="col", col=list(group=c(HC275="white", MMC269="orange", UMCC222="tomato")))
+anns <- unique(contents, by="id") |> setkey(id)
+com_groups <- HeatmapAnnotation(
+  mass = anns[colnames(abund), monomer_mass], 
+  na_col="white", 
+  which="row",
+  col=list(mass = circlize::colorRamp2(c(0, 1800), c("white", "darkblue"))))
+
+rm <- colMeans(counts)
+sig <- abund[tests[padj<0.05, id]]
+png("figures/compound_heatmap.png", width=10, height=10, units="in", res=300)
+Heatmap(
+  log10(abund+1e-3) |> t(), 
+  col=viridis(100), 
+  top_annotation = groups, 
+  left_annotation = com_groups,
+  show_row_names = FALSE, show_column_names = FALSE,
+  row_title = "compound", column_title = "samples",
+  name="abundance [log-scale]", raster_quality=2, raster_resize_mat = T
+)
+dev.off()
+```
+
+```{r, fig.width=5, fig.height=3}
+macros <- meta[contents[source_type == "Nutrient"], on="sample_id", nomatch=0]
+macros <- dcast(macros, sample_id + group + Status ~ name, value.var="abundance", fill=0, fun.aggregate=sum)
+
+ggplot(macros) +
+  aes(x=Proteins/1000, y=Carbohydrate/1000, color=Energy) +
+  geom_point() + 
+  labs(x="Protein [g/100g]", y="Carbohydrate [g/100g]", color="Energy [kcal/100g]") +
+  scale_color_viridis_c()
+ggsave("figures/prot_carb.pdf", width=5, height=3)
+```
+
+## Differential foods
+
+```{r}
+library(mbtools)
+
+config <- config_association(
+  variables = "group",
+  taxa_rank = "species",
+  in_samples = 0.0,
+  min_abundance = 3,
+  presence_threshold=1,
+  independent_weighting = FALSE,
+  shrink = F,
+  method="voom"
+)
+tests <- association(food_ps, config)
+anns <- unique(foods[, .(wikipedia_id, species, matched_taxid, food_group, food_subgroup)])
+food_tests <- anns[tests, on="species"]
+```
+
+```{r}
+config <- config_association(
+  variables = "group",
+  taxa_rank = "phylum",
+  in_samples = 0.0,
+  min_abundance = 3,
+  presence_threshold=0,
+  independent_weighting = FALSE,
+  shrink = F,
+  method="voom"
+)
+phylum_tests <- association(food_ps, config)
+phylum_tests
+```
+
+```{r, fig.width=4, fig.height=3}
+theme_minimal() |> theme_set()
+food_tests[, "se" := log2FoldChange/t]
+
+ggplot(food_tests[padj<0.05]) +
+  geom_vline(xintercept=0, linetype="dashed") +
+  aes(x=log2FoldChange, xmin=log2FoldChange - se, 
+      xmax=log2FoldChange + se, 
+      y=reorder(species, log2FoldChange)) +
+  geom_pointrange() +
+  labs(x="log2 fold-change", y="")
+ggsave("figures/sig_species.pdf", width=4, height=3)
+```
+
+```{r, fig.width=3, fig.height=5}
+dt <- plot_counts(food_ps, variable="group", tax_level="phylum", zeros=T, normalized=F, only_data=T)
+dt[, "relative" := reads/sum(reads), by="sample"]
+
+ggplot(dt[taxa %in% c("Streptophyta", "Chordata")]) +
+  aes(x=group, y=reads + 0.5) +
+  geom_jitter(width=0.3, stroke=0, size=1, alpha=0.5) +
+  stat_summary(fun.data=mean_sdl, fun.args=list(mult=1),
+               geom="pointrange", shape=23, fill="white", size=0.8) +
+  facet_wrap(~ taxa) + 
+  scale_y_log10() + 
+  theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1)) +
+  labs(x="metabolic status", y="reads + pc")
+ggsave("figures/metacardis_phyla.pdf", width=3.5, height=6)
+```
+
+Differential contents
+
+```{r}
+library(mbtools)
+
+config <- config_association(
+  variables = "group",
+  taxa_rank = "id",
+  in_samples = 0.0,
+  min_abundance = -4,
+  presence_threshold=-5,
+  independent_weighting = FALSE,
+  shrink = FALSE,
+  method="lm"
+)
+tests <- association(content_ps, config)
+anns <- unique(contents[, .(id, name, unit, superclass, class, subclass)])
+com_tests <- anns[tests, on="id"]
+```
+
+```{r, fig.width=5, fig.height=4}
+theme_minimal() |> theme_set()
+com_tests[, "se" := log2FoldChange/t]
+
+ggplot(com_tests[padj<0.05]) +
+  geom_vline(xintercept=0, linetype="dashed") +
+  aes(x=log2FoldChange, xmin=log2FoldChange - se, 
+      xmax=log2FoldChange + se, 
+      y=reorder(name, log2FoldChange)) +
+  geom_pointrange() +
+  labs(x="log2 fold-change", y="")
+ggsave("figures/sig_compounds.pdf", width=5, height=4)
+```
+
+```{r, fig.width=6, fig.height=6}
+dt <- plot_counts(content_ps, variable="group", tax_level="name", taxa=com_tests[padj<0.05, name], normalized=F, zeros=T, only_data=T)
+
+ggplot(dt) +
+  aes(x=group, y=reads) +
+  geom_jitter(width=0.3, stroke=0, size=1) +
+  stat_summary(fun.data=mean_cl_normal, geom="pointrange", shape=21, fill="white") +
+  facet_wrap(~ taxa)
+```
