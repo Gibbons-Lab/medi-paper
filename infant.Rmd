@@ -10,7 +10,7 @@ options(scipen=3)
 food_abundances <- fread("infants/data/food_abundance.csv")
 food_abundances[, "ncbi_taxonomy_id" := as.character(ncbi_taxonomy_id)]
 food_contents <- fread("infants/data/food_content.csv")
-meta <- fread("/proj/gibbons/2022_infant_data_st_louis/data/PRJNA473126.tsv")
+meta <- fread("infants/data/PRJNA473126.tsv")
 meta <- meta[, .(
   Run, Ethnicity, host_age_days_at_time_of_survey, 
   host_age_days, host_antimicrobial_in_last_7days, 
@@ -162,11 +162,6 @@ for (i in 1:length(tests)) {
   dt[, group := factor(group, levels=groups)]
   dt[, "relative" := (abundance + 1)/(total_reads + 1)]
   dt[, "item" := name]
-  plots[[name]] <- ggplot(dt) + aes(x=group, y=log10(relative)) + 
-    geom_jitter(width=0.3) + 
-    geom_boxplot(width=0.1) + 
-    stat_smooth(aes(group=1), method="lm") + 
-    labs(title=name, x="consumption frequency [servings/day]", y="abundance")
   print(name)
   abmod <- lm(log10(relative) ~ as.numeric(group), data=dt)
   premod <- glm((abundance > 0) ~ as.numeric(group), data=dt)
