@@ -69,20 +69,26 @@ content_ps
 
 ## Overview
 
-```{r, fig.width=12, fig.height=12}
+```{r, fig.width=13, fig.height=16}
 library(ComplexHeatmap)
 library(viridis)
 
-groups <- HeatmapAnnotation(group=sample_data(food_ps)$group, which="row")
-food_groups <- HeatmapAnnotation(`food group` = taxa[colnames(counts[, rm>0.1]), "phylum"], which="col")
-
 rm <- colMeans(counts)
+good <- rm > 1
+groups <- HeatmapAnnotation(group=sample_data(food_ps)$group, which="col", col=list(group=c(healthy="white", unhealthy="tomato")))
+gcols <- colorspace::qualitative_hcl(uniqueN(taxa[, "food_group"]), "Set2")
+names(gcols) <- unique(taxa[, "food_group"]) |> sort()
+food_groups <- HeatmapAnnotation(`food group` = taxa[colnames(counts[, good]), "food_group"], which="row", col=list(`food group` = gcols))
+
+png("figures/compound_heatmap.png", width=10, height=10, units="in", res=300)
 Heatmap(
-  log10(counts[, rm>0.1]+1), 
+  log10(counts[, good]+1) |> t(), 
   col=viridis(100), 
-  left_annotation = groups, 
-  top_annotation = food_groups,
-  show_row_names = FALSE, show_column_names = FALSE
+  top_annotation = groups, 
+  left_annotation = food_groups,
+  show_row_names = TRUE, show_column_names = FALSE,
+  row_title = "species", column_title = "samples",
+  name="abundance [log-scale]", raster_quality=2, raster_resize_mat = T
 )
 ```
 
