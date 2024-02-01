@@ -178,3 +178,24 @@ for (m in macros) {
   print(p)
 }
 ```
+
+Macronutrient composition distance vs ANI
+
+```{r}
+macro_abs <- collapsed[name != "Energy" & db=="genbank"] |> dcast(taxa ~ name, fill=0, value.var = "amount", fun.aggregate = mean)
+taxa <- macro_abs[, taxa]
+macro_abs <- as.matrix(macro_abs[, "taxa" := NULL])
+rownames(macro_abs) <- taxa
+D_macros <- dist(macro_abs)
+```
+
+```{r}
+dt <- data.table(divergence=as.numeric(as.dist(1 - ani[taxa, taxa])), macro_dist=as.numeric(D_macros))[divergence < 1]
+mantel(D_macros, as.dist(1-ani[taxa, taxa]), method="spear")
+ggplot(dt) +
+  aes(x=divergence, y=macro_dist/1000) +
+  geom_point(stroke=0, size=1) +
+  stat_smooth(method="gam") +
+  labs(x="1-ANI", y="macronutrient distance [g/100g]")
+ggsave("figures/ani_vs_macros.png", width=6, height=4, dpi=300)
+```
