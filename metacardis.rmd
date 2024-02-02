@@ -69,7 +69,7 @@ content_ps
 
 ## Overview
 
-```{r, fig.width=13, fig.height=16}
+```{r, fig.width=14, fig.height=16}
 library(ComplexHeatmap)
 library(viridis)
 
@@ -80,7 +80,7 @@ gcols <- colorspace::qualitative_hcl(uniqueN(taxa[, "food_group"]), "Set2")
 names(gcols) <- unique(taxa[, "food_group"]) |> sort()
 food_groups <- HeatmapAnnotation(`food group` = taxa[colnames(counts[, good]), "food_group"], which="row", col=list(`food group` = gcols))
 
-png("figures/compound_heatmap.png", width=10, height=10, units="in", res=300)
+png("figures/metacardis_food_heatmap.png", width=15, height=16, units="in", res=300)
 Heatmap(
   log10(counts[, good]+1) |> t(), 
   col=viridis(100), 
@@ -90,6 +90,7 @@ Heatmap(
   row_title = "species", column_title = "samples",
   name="abundance [log-scale]", raster_quality=2, raster_resize_mat = T
 )
+dev.off()
 ```
 
 ```{r, fig.width=10, fig.height=10}
@@ -102,8 +103,7 @@ com_groups <- HeatmapAnnotation(
   col=list(mass = circlize::colorRamp2(c(0, 1800), c("white", "darkblue"))))
 
 rm <- colMeans(counts)
-sig <- abund[tests[padj<0.05, id]]
-png("figures/compound_heatmap.png", width=10, height=10, units="in", res=300)
+png("figures/metacardis_compound_heatmap.png", width=10, height=10, units="in", res=300)
 Heatmap(
   log10(abund+1e-3) |> t(), 
   col=viridis(100), 
