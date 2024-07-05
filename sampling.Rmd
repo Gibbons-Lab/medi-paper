@@ -1,7 +1,7 @@
 # Creating artificial ground truth data
 
 Here we will sample some metagenomes with known composition. Those will consist of 90% of a representative food-free sample containing bacteria and human reads
-and of 10% of stageered abundance food reads.
+and of 10% of staggered abundance food reads.
 
 ## Building up a representative sample
 
@@ -10,7 +10,8 @@ First we will calculate the mean abundances from the a healthy cohort taken from
 ```{r}
 library(data.table)
 
-cont <- fread("/proj/gibbons/refs/k2_foods_202306/taxids.txt")$taxid
+manifest <- fread("db/data/manifest.csv")
+cont <- manifest[, unique(matched)]
 
 present <- list.files("simulated/data/genomes", ".fna.gz") |> strsplit(".fna.gz", fixed=T) |> unlist() |> as.numeric()
 
