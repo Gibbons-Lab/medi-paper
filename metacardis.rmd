@@ -8,7 +8,7 @@ library(readxl)
 
 GROUPS <- c(`8`="healthy", `2a`="obese w/o diabetes", `2b`="eligible for bariatric surgery", `1`="metabolic syndrome only", `3`="T2D")
 
-meta <- read_excel("metacardis/data/41586_2021_4177_MOESM3_ESM.xlsx", "ST 1b") |> 
+meta <- read_excel("metacardis/data/41586_2021_4177_MOESM3_ESM.xlsx", "ST 1b") |>
   as.data.table() |> unique(by="SampleID")
 meta[, "sample_id" := paste0("M0", SampleID)]
 meta[, "group" := "unhealthy"]
@@ -66,7 +66,7 @@ s <- sdata[rownames(abund), ]
 clr <- apply(abund, 1, function(x) log(x + 1e-12) - mean(log(x + 1e-12)))
 
 content_ps <- phyloseq(
-  otu_table(clr, taxa_are_rows=FALSE),
+  otu_table(log10(abund+1e-6), taxa_are_rows=FALSE),
   tax_table(compounds[colnames(abund), ]),
   sample_data(s)
 )
@@ -88,9 +88,9 @@ food_groups <- HeatmapAnnotation(`food group` = taxa[colnames(counts[, good]), "
 
 png("figures/metacardis_food_heatmap.png", width=15, height=16, units="in", res=300)
 Heatmap(
-  log10(counts[, good]+1) |> t(), 
-  col=viridis(100), 
-  top_annotation = groups, 
+  log10(counts[, good]+1) |> t(),
+  col=viridis(100),
+  top_annotation = groups,
   left_annotation = food_groups,
   show_row_names = TRUE, show_column_names = FALSE,
   row_title = "species", column_title = "samples",
@@ -103,17 +103,17 @@ dev.off()
 groups <- HeatmapAnnotation(group=sample_data(content_ps)$detailed_group, which="col", col=list(group=c(healthy="white", `obese w/o diabetes`="tomato", `eligible for bariatric surgery`="purple", `metabolic syndrome only`="orange")))
 anns <- unique(contents, by="id") |> setkey(id)
 com_groups <- HeatmapAnnotation(
-  mass = anns[colnames(abund), monomer_mass], 
-  na_col="white", 
+  mass = anns[colnames(abund), monomer_mass],
+  na_col="white",
   which="row",
   col=list(mass = circlize::colorRamp2(c(0, 1800), c("white", "darkblue"))))
 
 rm <- colMeans(counts)
 png("figures/metacardis_compound_heatmap.png", width=10, height=10, units="in", res=300)
 Heatmap(
-  log10(abund+1e-3) |> t(), 
-  col=viridis(100), 
-  top_annotation = groups, 
+  log10(abund+1e-3) |> t(),
+  col=viridis(100),
+  top_annotation = groups,
   left_annotation = com_groups,
   show_row_names = FALSE, show_column_names = FALSE,
   row_title = "compound", column_title = "samples",
@@ -131,7 +131,7 @@ macros <- dcast(macros, sample_id + group + detailed_group ~ name, value.var="ab
 
 ggplot(macros) +
   aes(x=Proteins/1000, y=Carbohydrate/1000, color=Energy) +
-  geom_point() + 
+  geom_point() +
   labs(x="Protein [g/100g]", y="Carbohydrate [g/100g]", color="Energy [kcal/100g]") +
   scale_color_viridis_c()
 ggsave("figures/prot_carb.pdf", width=5, height=3)
@@ -176,8 +176,8 @@ food_tests[, "se" := log2FoldChange/t]
 
 ggplot(food_tests[padj<0.05]) +
   geom_vline(xintercept=0, linetype="dashed") +
-  aes(x=log2FoldChange, xmin=log2FoldChange - se, 
-      xmax=log2FoldChange + se, 
+  aes(x=log2FoldChange, xmin=log2FoldChange - se,
+      xmax=log2FoldChange + se,
       y=reorder(species, log2FoldChange)) +
   geom_pointrange() +
   labs(x="log2 fold-change", y="")
@@ -193,8 +193,8 @@ ggplot(dt[taxa %in% c("Streptophyta", "Chordata")]) +
   geom_jitter(width=0.3, stroke=0, size=1, alpha=0.5) +
   stat_summary(fun.data=mean_sdl, fun.args=list(mult=1),
                geom="pointrange", shape=23, fill="white", size=0.8) +
-  facet_wrap(~ taxa) + 
-  scale_y_log10() + 
+  facet_wrap(~ taxa) +
+  scale_y_log10() +
   theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1)) +
   labs(x="metabolic status", y="reads + pc")
 ggsave("figures/metacardis_phyla.pdf", width=3.5, height=6)
@@ -226,8 +226,8 @@ com_tests[, "se" := log2FoldChange/t]
 
 ggplot(com_tests[padj<0.01]) +
   geom_vline(xintercept=0, linetype="dashed") +
-  aes(x=log2FoldChange, xmin=log2FoldChange - se, 
-      xmax=log2FoldChange + se, 
+  aes(x=log2FoldChange, xmin=log2FoldChange - se,
+      xmax=log2FoldChange + se,
       y=reorder(name, log2FoldChange)) +
   geom_pointrange() +
   labs(x="log2 fold-change", y="")
