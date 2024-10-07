@@ -15,7 +15,7 @@ meta[, "group" := "unhealthy"]
 meta[PatientGroup=="8", group:="healthy"]
 meta[, "detailed_group" := factor(GROUPS[PatientGroup], levels=GROUPS)]
 meta[, "group" := factor(group)]
-meta <- meta[PatientGroup %in% c("8", "1")]
+#meta <- meta[PatientGroup %in% c("8", "1")]
 meta
 ```
 
@@ -55,6 +55,7 @@ And now for the contents.
 
 ```{r}
 contents[, "id" := paste0(source_type, "_", trimws(compound_id))]
+contents <- contents[unit %chin% c("mg/100g", "kcal/100g")]
 abund <- dcast(contents, sample_id ~ id, value.var="abundance", fill=0, fun.aggregate = sum)
 sids <- abund[, sample_id]
 abund <- as.matrix(abund[, "sample_id" := NULL])
