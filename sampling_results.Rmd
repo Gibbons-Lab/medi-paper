@@ -41,11 +41,10 @@ ggplot(merged) +
   aes(x=expected_reads+1.0, y=reads+1.0) +
   stat_smooth(data=merged, method="lm", color="black", linewidth=1, aes(group=1)) +
   #geom_boxplot(width=0.4, aes(group=factor(expected_reads)), fill="white", color="black", outlier.color=NA) +
-  geom_point(stroke=0.5, shape=21, size=2, aes(fill=within_genus)) +
-  #stat_summary(fun.data=mean_sdl, fun.args=list(mult=1), geom="pointrange", aes(group=1), shape=23, fill="white") +
-  geom_line(aes(group=genus), color="gray") +
+  geom_jitter(stroke=0.5, shape=21, size=2, aes(fill=within_family), width=0.05) +
+  #geom_line(aes(group=genus), color="gray") +
   scale_x_log10() + scale_y_log10() + 
-  guides(fill=FALSE) + facet_wrap(~ sample_id) +
+  guides(fill=FALSE) + #facet_wrap(~ sample_id) +
   labs(x="expected [reads + 1]", y="observed [reads + 1]")
 ggsave("figures/simulated_comparison.png", dpi=300, width=4, height=3)
 ```
@@ -59,10 +58,10 @@ corrs[, summary(r)]
 probs <- merged[expected_reads > 0, .(prob=sum(reads > 0)/16), by="real_relative"]
 
 ggplot(probs) +
-  aes(x=real_relative, y=prob) +
+  aes(x=real_relative * 1e6, y=prob) +
   geom_point() +
   geom_line() +
-  scale_x_log10(limits=c(NA, 0.15)) +
+  scale_x_log10(limits=c(NA, 1e5)) +
   labs(x="relative abundance [reads/total_reads]", y="P(detection)")
 ggsave("figures/detection_probability.pdf", width=4, height=3)
 ```

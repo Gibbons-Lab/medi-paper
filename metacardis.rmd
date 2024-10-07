@@ -6,12 +6,16 @@ We start by reading in the metadata from METACARDIS using the SI from https://ww
 library(data.table)
 library(readxl)
 
-meta <- read_excel("metacardis/data/41591_2022_1688_MOESM3_ESM.xlsx", "ST14", skip=1) |> 
-  as.data.table() |> unique(by="ID")
-meta[, "sample_id" := paste0("M0", ID)]
+GROUPS <- c(`8`="healthy", `2a`="obese w/o diabetes", `2b`="eligible for bariatric surgery", `1`="metabolic syndrome only", `3`="T2D")
+
+meta <- read_excel("metacardis/data/41586_2021_4177_MOESM3_ESM.xlsx", "ST 1b") |> 
+  as.data.table() |> unique(by="SampleID")
+meta[, "sample_id" := paste0("M0", SampleID)]
 meta[, "group" := "unhealthy"]
-meta[grepl("HC", Status), group:="healthy"]
-meta[, "group" := factor(group, levels=c("healthy", "unhealthy"))]
+meta[PatientGroup=="8", group:="healthy"]
+meta[, "detailed_group" := factor(GROUPS[PatientGroup], levels=GROUPS)]
+meta[, "group" := factor(group)]
+meta <- meta[PatientGroup %in% c("8", "1")]
 meta
 ```
 
@@ -21,7 +25,7 @@ Now we read in the food abundances and contents and select the relevant metadata
 foods <- fread("metacardis/data/food_abundance.csv")[sample_id %chin% meta$sample_id]
 contents <- fread("metacardis/data/food_content.csv")[sample_id %chin% meta$sample_id]
 meta <- meta[sample_id %chin% foods$sample_id]
-meta[, table(Status)]
+meta[, table(detailed_group)]
 ```
 
 Nice, lets build up the phyloseq objects now. First, for the food abundance.
@@ -59,8 +63,10 @@ compounds <- unique(contents[, .(source_type, kingdom, superclass, class, subcla
 rownames(compounds) <- compounds[, "id"]
 s <- sdata[rownames(abund), ]
 
+clr <- apply(abund, 1, function(x) log(x + 1e-12) - mean(log(x + 1e-12)))
+
 content_ps <- phyloseq(
-  otu_table(log10(abund+1e-3), taxa_are_rows=FALSE),
+  otu_table(clr, taxa_are_rows=FALSE),
   tax_table(compounds[colnames(abund), ]),
   sample_data(s)
 )
@@ -94,7 +100,7 @@ dev.off()
 ```
 
 ```{r, fig.width=10, fig.height=10}
-groups <- HeatmapAnnotation(group=sample_data(content_ps)$Status, which="col", col=list(group=c(HC275="white", MMC269="orange", UMCC222="tomato")))
+groups <- HeatmapAnnotation(group=sample_data(content_ps)$detailed_group, which="col", col=list(group=c(healthy="white", `obese w/o diabetes`="tomato", `eligible for bariatric surgery`="purple", `metabolic syndrome only`="orange")))
 anns <- unique(contents, by="id") |> setkey(id)
 com_groups <- HeatmapAnnotation(
   mass = anns[colnames(abund), monomer_mass], 
@@ -117,8 +123,11 @@ dev.off()
 ```
 
 ```{r, fig.width=5, fig.height=3}
+library(ggplot2)
+theme_minimal() |> theme_set()
+
 macros <- meta[contents[source_type == "Nutrient"], on="sample_id", nomatch=0]
-macros <- dcast(macros, sample_id + group + Status ~ name, value.var="abundance", fill=0, fun.aggregate=sum)
+macros <- dcast(macros, sample_id + group + detailed_group ~ name, value.var="abundance", fill=0, fun.aggregate=sum)
 
 ggplot(macros) +
   aes(x=Proteins/1000, y=Carbohydrate/1000, color=Energy) +
@@ -131,19 +140,18 @@ ggsave("figures/prot_carb.pdf", width=5, height=3)
 ## Differential foods
 
 ```{r}
-library(mbtools)
+library(miso)
 
 config <- config_association(
   variables = "group",
   taxa_rank = "species",
-  in_samples = 0.0,
-  min_abundance = 3,
-  presence_threshold=1,
+  in_samples = 0.1,
+  min_abundance = 10,
   independent_weighting = FALSE,
   shrink = F,
   method="voom"
 )
-tests <- association(food_ps, config)
+tests <- association(food_ps |> subset_samples(sample_sums(food_ps) > 0), config)
 anns <- unique(foods[, .(wikipedia_id, species, matched_taxid, food_group, food_subgroup)])
 food_tests <- anns[tests, on="species"]
 ```
@@ -152,9 +160,8 @@ food_tests <- anns[tests, on="species"]
 config <- config_association(
   variables = "group",
   taxa_rank = "phylum",
-  in_samples = 0.0,
-  min_abundance = 3,
-  presence_threshold=0,
+  in_samples = 0.1,
+  min_abundance = 10,
   independent_weighting = FALSE,
   shrink = F,
   method="voom"
@@ -182,7 +189,7 @@ dt <- plot_counts(food_ps, variable="group", tax_level="phylum", zeros=T, normal
 dt[, "relative" := reads/sum(reads), by="sample"]
 
 ggplot(dt[taxa %in% c("Streptophyta", "Chordata")]) +
-  aes(x=group, y=reads + 0.5) +
+  aes(x=group, y=reads + 1) +
   geom_jitter(width=0.3, stroke=0, size=1, alpha=0.5) +
   stat_summary(fun.data=mean_sdl, fun.args=list(mult=1),
                geom="pointrange", shape=23, fill="white", size=0.8) +
@@ -196,14 +203,14 @@ ggsave("figures/metacardis_phyla.pdf", width=3.5, height=6)
 Differential contents
 
 ```{r}
-library(mbtools)
+library(miso)
 
 config <- config_association(
   variables = "group",
   taxa_rank = "id",
-  in_samples = 0.0,
-  min_abundance = -4,
-  presence_threshold=-5,
+  in_samples = 0.1,
+  min_abundance = -6,
+  presence_threshold=-12,
   independent_weighting = FALSE,
   shrink = FALSE,
   method="lm"
@@ -217,7 +224,7 @@ com_tests <- anns[tests, on="id"]
 theme_minimal() |> theme_set()
 com_tests[, "se" := log2FoldChange/t]
 
-ggplot(com_tests[padj<0.05]) +
+ggplot(com_tests[padj<0.01]) +
   geom_vline(xintercept=0, linetype="dashed") +
   aes(x=log2FoldChange, xmin=log2FoldChange - se, 
       xmax=log2FoldChange + se, 
@@ -228,11 +235,11 @@ ggsave("figures/sig_compounds.pdf", width=5, height=4)
 ```
 
 ```{r, fig.width=6, fig.height=6}
-dt <- plot_counts(content_ps, variable="group", tax_level="name", taxa=com_tests[padj<0.05, name], normalized=F, zeros=T, only_data=T)
+dt <- plot_counts(content_ps, variable="group", tax_level="name", taxa=com_tests[padj<0.01, name], normalized=F, zeros=T, only_data=T)
 
 ggplot(dt) +
   aes(x=group, y=reads) +
   geom_jitter(width=0.3, stroke=0, size=1) +
-  stat_summary(fun.data=mean_cl_normal, geom="pointrange", shape=21, fill="white") +
+  stat_summary(fun.data=mean_sdl, geom="pointrange", shape=21, fill="white", fun.args=list(mult=1), col="tomato") +
   facet_wrap(~ taxa)
 ```

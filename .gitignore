@@ -50,3 +50,12 @@ rsconnect/
 
 # large files
 data/
+
+# Nextflow files
+*.nf
+bin
+.nextflow
+.nextflow.log*
+work
+metacardis_new
+

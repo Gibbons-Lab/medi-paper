@@ -17,8 +17,12 @@ metadata
 ```
 
 ```{r}
+man <- fread("db/data/manifest.csv")[, .(db, rank, matched_taxid, seqlength)]
+
 foods <- fread("ihmp/data/food_abundance.csv")
-foods
+foods <- man[foods, on="matched_taxid"]
+foods[, "tpm" := 1.0e6 * reads / as.double(seqlength)]
+foods[is.na(tpm), tpm := 0.0]
 
 contents <- fread("ihmp/data/food_content.csv")
 contents
@@ -48,7 +52,8 @@ freqs <- c(
   `Within the past 4 to 7 days` = 1/5.5,
   `Within the past 2 to 3 days` = 1/2.5,
   `Yesterday, 1 to 2 times` = 1.5,                                
-  `Yesterday, 3 or more times` = 3                              
+  `Yesterday, 3 or more times` = 3,
+  `NA` = 0
 )
 
 results <- list()
@@ -57,12 +62,12 @@ merged <- metadata[foods, on=c(`Run` = "sample_id")]
 for (i in 1:length(tests)) {
   name <- names(tests)[i]
   vals <- tests[[i]]
-  dt <- merged[, .(abundance=sum(reads[eval(vals$ex)]), group=.SD[[vals$group]][1], total_reads=total_reads[1]), by="External ID"]
+  dt <- merged[, .(abundance=sum(tpm[eval(vals$ex)]), group=.SD[[vals$group]][1], total_reads=total_reads[1]), by="External ID"]
   ns <- dt[, .N, by="group"] |> setkey(group)
   dt <- dt[group %chin% names(freqs) & ns[group, N] >= 10]
   dt[, "frequency" := freqs[group]]
   dt[, group := factor(group, levels=names(freqs)[names(freqs) %in% group])]
-  dt[, "relative" := (abundance + 1)/(total_reads + 1)]
+  dt[, "relative" := (abundance + 0.01)]
   dt[, "item" := name]
   plots[[name]] <- ggplot(dt) + aes(x=group, y=log10(relative)) + 
     geom_jitter(width=0.3) + 
@@ -73,7 +78,7 @@ for (i in 1:length(tests)) {
   abmod <- lm(log10(relative) ~ frequency, data=dt)
   premod <- glm((abundance > 0) ~ frequency, data=dt)
   tables[[name]] <- dt
-  results[[name]] <- dt[, .(n=.N, relative=mean(log10(relative*1e6)), sd=sd(log10(relative)), detected=sum(abundance > 0), item=name), by="group"]
+  results[[name]] <- dt[, .(n=.N, relative=mean(log10(relative*1e6)), sd=sd(log10(relative*1e6)), detected=sum(abundance > 0), item=name), by="group"]
   results[[name]][, "p_abundance" := summary(abmod)$coefficients[2, 4]]
   results[[name]][, "p_prevalence" := summary(premod)$coefficients[2, 4]]
 }
@@ -87,7 +92,7 @@ ggplot(r) +
   geom_jitter(data=ta, aes(y=log10(relative*1e6)), stroke=0, size=0.5, width=0.3) +
   #geom_boxplot(outlier.color="NA") +
   geom_pointrange(aes(ymin=relative-sd, ymax=relative+sd), shape=21, fill="white") +
-  geom_text(data=unique(r, by="item"), aes(x=0, y=3, label=sprintf("p[t-test]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
+  geom_text(data=unique(r, by="item"), aes(x=0, y=7, label=sprintf("p[t-test]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
   facet_wrap(~ item, ncol=2) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   labs(x="", y="log-relative abundance [log₁₀RPM]") +
@@ -98,7 +103,91 @@ ggsave("figures/ihmp_foods.png", width=3, height=11, dpi=300)
 
 ```{r, fig.width=5, fig.height=3}
 rare <- foods[, .(n=sum(reads > 0), reads=sum(reads), total_reads=max(total_reads)), by="sample_id"]
-ggplot(rare[n>0], aes(x=total_reads, y=reads, color=total_reads)) + geom_point() + stat_smooth(method="lm", color="tomato") +
-  labs(x="#reads mapped to food", y="#observed food items", color="library size") + scale_x_log10() + scale_y_log10()
+ggplot(rare[n>0], aes(x=total_reads, y=reads)) + geom_point() + stat_smooth(method="lm", color="tomato") +
+  labs(x="library size (#reads in sample)", y="#food reads") + scale_x_log10() + scale_y_log10()
+cor.test(rare$total_reads, rare$reads)
 ggsave("figures/food_reads.pdf", width=5, height=3)
 ``` 
+
+```{r, fig.width=5, fig.height=3}
+ggplot(foods[seqlength>1e6], aes(x=seqlength/1e9, y=relative_abundance)) + geom_point() + stat_smooth(method="lm", color="tomato") +
+  labs(x="haploid genome size [Gbps]", y="relative food abundance") + scale_x_log10() + scale_y_log10()
+foods[seqlength>1e6, cor.test(reads, seqlength)]
+ggsave("figures/genome_size.pdf", width=5, height=3)
+``` 
+
+## Diet distances
+
+```{r}
+species <- fread("ihmp/data/S_counts.csv")[grepl("Bacteria|Archaea", lineage)]
+microbiome_mat <- dcast(species, sample_id ~ lineage, value.var = "new_est_reads", fill=0, fun.aggregate = sum)
+sids <- microbiome_mat[, tstrsplit(sample_id, "S_")[[2]]]
+microbiome_mat <- as.matrix(microbiome_mat[, "sample_id" := NULL])
+rownames(microbiome_mat) <- sids
+good <- colMeans(microbiome_mat) > 10
+microbiome_mat <- microbiome_mat[, good]
+# micro_rare <- phyloseq(otu_table(microbiome_mat, taxa_are_rows = F)) |> rarefy_even_depth(100000) |> otu_table()
+microbiome_relative <- microbiome_mat / rowSums(microbiome_mat)
+```
+
+```{r}
+diet <- metadata[, names(metadata)[72:92][-11], with=F]
+diet <- apply(diet, 2, function(x) ifelse(x == "", 0, freqs[x]))
+rownames(diet) <- metadata[["Run"]]
+diet <- diet[rowSums(diet) > 0, ]
+diet <- diet[, colMeans(diet >0) > 0.1]
+dim(diet)
+```
+
+```{r}
+foodab <- foods
+foodab[, "id" := paste(matched_taxid, species, wikipedia_id, sep="|")]
+food_mat <- dcast(foodab, sample_id ~ id, value.var = "reads", fill=0, fun.aggregate = sum)
+sids <- food_mat[, sample_id]
+food_mat <- as.matrix(food_mat[, sample_id := NULL])
+rownames(food_mat) <- sids
+food_relative <- food_mat[rowSums(food_mat) > 0, ]
+food_relative <- food_relative / rowSums(food_relative)
+food_relative <- food_relative[rowSums(food_relative) > 0, ]
+food_relative <- food_relative[, colMeans(food_relative >0) > 0.1]
+dim(food_relative)
+```
+
+## Beta diversity tests
+
+Let's write a little function that runs the test for microbiome <-> other comparison and
+plots and returns the results.
+
+```{r}
+library(vegan)
+
+micro_mantel <- function(first, other, description) {
+  sids <- intersect(rownames(first), rownames(other))
+  micro_dist <- vegdist(first[sids, ], "bray")
+  other_dist <- vegdist(other[sids, ], "bray")
+  
+  test <- mantel(micro_dist, other_dist, method="pearson")
+  results <- data.table(micro=as.numeric(micro_dist), other=as.numeric(other_dist))
+  pl <- ggplot(results) +
+    aes(x=other, y=micro) +
+    geom_point(size=1, alpha=0.25, stroke=0) +
+    stat_smooth(method="lm") +
+    labs(x=paste(description, "[Bray]"), y="species abundance distance [Bray]")
+  print(pl)
+  print(test)
+}
+```
+
+Now we run it for the measures.
+
+```{r}
+micro_mantel(microbiome_relative, diet, "FFQ distances")
+```
+
+```{r}
+micro_mantel(microbiome_relative, food_relative, "MEDI food distances")
+```
+
+```{r}
+micro_mantel(food_relative, diet, "FFQ vs. MEDI")
+```

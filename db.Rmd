@@ -5,7 +5,7 @@ Let's start by reading the annotations.
 ```{r}
 library(data.table)
 
-seqs <- fread("/proj/gibbons/refs/k2_foods_202306/manifest.csv")
+seqs <- fread("db/data/manifest.csv")
 seqs[phylum == "", phylum := paste0("[", class, "]")]
 seqs[, "taxa" := basename(filename)]
 seqs[, sum(seqlength)/1e9]
@@ -15,7 +15,7 @@ seqs[, table(db, rank)]
 And let's look at the matched foods:
 
 ```{r}
-foods <- fread("db/data/dbs/food_matches.csv")[matched_taxid %in% seqs$matched_taxid]
+foods <- fread("db/data/medi_db/food_matches.csv")
 foods[, table(db)]
 ```
 
@@ -76,7 +76,7 @@ contents[name=="Energy"]
 Now we will start summarizing them over individual organisms.
 
 ```{r}
-macros <- c("Proteins", "Carbohydrate", "Fiber (dietary)", "Fat") 
+macros <- c("Proteins", "Carbohydrate", "Fiber (dietary)", "Fatty acids") 
 
 broad_prepration <- function (classes) {
   allpreps <- paste0(unique(classes), collapse=",")
@@ -182,7 +182,7 @@ for (m in macros) {
 Macronutrient composition distance vs ANI
 
 ```{r}
-macro_abs <- collapsed[name != "Energy" & db=="genbank"] |> dcast(taxa ~ name, fill=0, value.var = "amount", fun.aggregate = mean)
+macro_abs <- collapsed[!grepl("Energy", name) & db=="genbank"] |> dcast(taxa ~ name, fill=0, value.var = "amount", fun.aggregate = mean)
 taxa <- macro_abs[, taxa]
 macro_abs <- as.matrix(macro_abs[, "taxa" := NULL])
 rownames(macro_abs) <- taxa
@@ -194,8 +194,8 @@ dt <- data.table(divergence=as.numeric(as.dist(1 - ani[taxa, taxa])), macro_dist
 mantel(D_macros, as.dist(1-ani[taxa, taxa]), method="spear")
 ggplot(dt) +
   aes(x=divergence, y=macro_dist/1000) +
-  geom_point(stroke=0, size=1) +
-  stat_smooth(method="gam") +
+  geom_point(stroke=0, size=1, alpha=0.5) +
+  stat_smooth(aes(x=divergence), method="gam")
   labs(x="1-ANI", y="macronutrient distance [g/100g]")
 ggsave("figures/ani_vs_macros.png", width=6, height=4, dpi=300)
 ```
