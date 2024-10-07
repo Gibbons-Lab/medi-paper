@@ -89,7 +89,7 @@ macros <- c("Proteins", "Carbohydrate", "Fiber (dietary)", "Fat", "Energy", "Fat
 
 adults <- fread("ihmp/data/food_content.csv")[name %chin% macros]
 cohorts <- rbind(food_contents[name %chin% macros][, "cohort" := "infants"], adults[, "cohort" := "adults"], fill=T)
-cohorts[, t.test(abundance ~ cohort, data=.SD), by="name"]
+cohorts[, t.test(abundance ~ cohort, data=.SD)[c("p.value", "statistic")], by="name"]
 ggplot(cohorts[name != "Energy"]) +
   aes(x=name, y=abundance/1000, fill=cohort) +
   geom_boxplot(position="dodge") + 

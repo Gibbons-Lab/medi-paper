@@ -150,7 +150,7 @@ config <- config_association(
   min_abundance = 10,
   independent_weighting = FALSE,
   shrink = F,
-  method="voom"
+  method="clr"
 )
 tests <- association(food_ps |> subset_samples(sample_sums(food_ps) > 0), config)
 anns <- unique(foods[, .(wikipedia_id, species, matched_taxid, food_group, food_subgroup)])
@@ -165,7 +165,7 @@ config <- config_association(
   min_abundance = 10,
   independent_weighting = FALSE,
   shrink = F,
-  method="voom"
+  method="clr"
 )
 phylum_tests <- association(food_ps, config)
 phylum_tests
@@ -236,7 +236,7 @@ ggsave("figures/sig_compounds.pdf", width=5, height=4)
 ```
 
 ```{r, fig.width=6, fig.height=6}
-dt <- plot_counts(content_ps, variable="group", tax_level="name", taxa=com_tests[padj<0.01, name], normalized=F, zeros=T, only_data=T)
+dt <- plot_counts(content_ps, variable="group", tax_level="name", taxa=com_tests[padj<0.05, name], normalized=F, zeros=T, only_data=T)
 
 ggplot(dt) +
   aes(x=group, y=reads) +
