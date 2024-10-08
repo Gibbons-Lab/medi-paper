@@ -1,0 +1,82 @@
+# Avocado test
+
+```{r}
+library(data.table)
+
+foods <- fread("data/food_abundance.csv")
+meta <- fread("data/metadata.csv")
+meta[, "sample_id" := tstrsplit(MetagenomicsFileR1, "_R")[[1]]]
+foods <- meta[foods, on="sample_id"]
+foods
+```
+
+```{r, fig.height=6, fig.width=3}
+library(ggplot2)
+theme_minimal() |> theme_set()
+
+avocado <- foods[, .(relative = (sum(reads[genus == "Persea"], na.rm=T))/(total_reads[1])), by="sample_id"]
+avocado <- meta[avocado, on="sample_id"]
+
+test <- wilcox.test(relative * 1e6 ~ Treatment, data=avocado)
+print(test)
+
+ggplot(avocado[BaselineEnd == "End"]) +
+  aes(x=Treatment, y=relative*1e6, group=Treatment, shape=BaselineEnd) +
+  geom_jitter(width=0.3) + scale_y_log10() +
+  stat_summary(fun.data = mean_sdl, fun.args = list(mult=1), color="red")
+```
+
+```{r}
+library(phyloseq)
+
+foods[species == "", species := paste0(genus, " spp.")]
+counts <- dcast(foods, sample_id ~ species, value.var="reads", fill=0, fun.aggregate=sum)
+sids <- counts[, sample_id]
+counts <- as.matrix(counts[, "sample_id" := NULL])
+rownames(counts) <- sids
+taxa <- unique(foods[, .(food_group, food_subgroup,kingdom, phylum, class, order, genus, species)], by="species") |> as.matrix()
+rownames(taxa) <- taxa[, "species"]
+sdata <- as.data.frame(meta)
+sdata$Treatment <- factor(sdata$Treatment, c("Control", "Avocado"))
+sdata$A_Gender <- factor(sdata$A_Gender, c("F", "M"))
+rownames(sdata) <- sdata$sample_id
+
+food_ps <- phyloseq(
+  otu_table(counts, taxa_are_rows=FALSE),
+  tax_table(taxa),
+  sample_data(sdata)
+)
+food_ps
+```
+
+```{r}
+library(miso)
+
+config <- config_association(
+  variables = "Treatment",
+  taxa_rank = "species",
+  in_samples = 0.1,
+  min_abundance = 0,
+  presence_threshold= 0,
+  independent_weighting = FALSE,
+  shrink = F,
+  method="voom"
+)
+tests <- association(food_ps, config)
+anns <- unique(foods[, .(wikipedia_id, species, matched_taxid, food_group, food_subgroup)])
+food_tests <- anns[tests, on="species"]
+```
+
+```{r, fig.width=3, fig.height=3}
+library(ggplot2)
+theme_minimal() |> theme_set()
+
+ggplot(food_tests) +
+  aes(x=log2FoldChange, y=-log10(pvalue), label=wikipedia_id, color=padj<0.05) +
+  geom_label(data=food_tests[padj<0.05], hjust=1, nudge_x = -0.1) +
+  geom_vline(xintercept=0, linetype="dashed") +
+  guides(color="none") + scale_color_manual(values=c("black", "tomato")) +
+  labs(x="log fold-change Treatment vs. Control", y="log₁₀ p-value") +
+  geom_point()
+ggsave("volcano.pdf", width=3, height=3)
+```

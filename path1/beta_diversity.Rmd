@@ -1,0 +1,182 @@
+# Relatonship between diet estimates and microbiome beta diversity
+
+```{r}
+library(data.table)
+library(ggplot2)
+theme_minimal() |> theme_set()
+```
+
+We start by reading in the general metadata to get our sequencing to individual mapping.
+
+```{r}
+meta <- fread("data/metadata.csv")
+meta[, "sample_id" := tstrsplit(MetagenomicsFileR1, "_R")[[1]]]
+meta[, "Participant ID" := sprintf("PA%03d", SubjectID)]
+meta
+```
+
+We will now compare the beta diversity of the gut microbiome to each of the diet estimates
+meaning FFQs, 24h logs, MEDI foods, MEDI nutrients.
+
+Let's start by getting the microbial species abundances.
+
+```{r}
+library(data.table)
+
+RANKS <- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
+
+species <- fread("data/S_counts.csv")[grepl("k__Bacteria", lineage)]
+species[, "sample_id" := gsub("S_", "", sample_id)]
+taxa <- species[, tstrsplit(lineage, ";")]
+names(taxa) <- RANKS
+taxa[["lineage"]] <- species[["lineage"]]
+species <- cbind(species, taxa)
+species[, unique(kingdom)]
+species <- species[meta[, .(`Participant ID`, sample_id)], on="sample_id"]
+species
+```
+
+Let's convert it to a matrix.
+
+```{r}
+library(phyloseq)
+
+microbiome_mat <- dcast(species, sample_id ~ species, value.var = "new_est_reads", fill=0, fun.aggregate = sum)
+sids <- microbiome_mat[, sample_id]
+microbiome_mat <- as.matrix(microbiome_mat[, "sample_id" := NULL])
+rownames(microbiome_mat) <- sids
+good <- colMeans(microbiome_mat > 0) > 0.5
+microbiome_mat <- microbiome_mat[, good]
+# micro_rare <- phyloseq(otu_table(microbiome_mat, taxa_are_rows = F)) |> rarefy_even_depth(100000) |> otu_table()
+microbiome_relative <- microbiome_mat / rowSums(microbiome_mat)
+```
+
+## Diet data
+
+Let's start by reading the metadata and the collection dates again.
+
+```{r}
+meta <- fread("data/metadata.csv")
+meta[, "sample_id" := tstrsplit(MetagenomicsFileR1, "_R")[[1]]]
+meta[, "Participant ID" := sprintf("PA%03d", SubjectID)]
+vars <- names(meta)
+ffq_vars <- vars[grepl("D_FFQ", vars)]
+meta
+```
+
+And we read the poop collection dates and merge.
+
+```{r}
+dates <- fread("data/collection_dates.csv")
+dates[, "time" := as.POSIXct(paste(Date, Time), format="%m/%d/%Y %I:%M %p")]
+dates[, "SubjectID" := tstrsplit(ID, "-")[[2]] |> as.numeric()]
+dates[, "Period" := tstrsplit(ID, "-")[[3]] |> as.numeric()]
+merged <- dates[, .(SubjectID, Period, time)][meta, on=c("SubjectID", "Period")]
+merged
+```
+Now we read the diet data. Let's start by 24h intake
+
+```{r}
+intake <- fread("data/intake_processed.csv")
+intake_means <- intake[time_diff>72, .(
+  amount=mean(amount), 
+  sd=sd(amount), 
+  time=time[1], 
+  n=uniqueN(entry), 
+  subject=`Participant ID`[1]
+  ), by=c("measure", "sample_id")][!is.na(amount)]
+intake_mat <- dcast(intake_means, sample_id ~ measure, value.var = "amount", fill=0)
+sids <- intake_mat[, sample_id]
+intake_mat <- as.matrix(intake_mat[, sample_id := NULL])
+rownames(intake_mat) <- sids
+good <- colMeans(intake_mat > 0) > 0.5
+intake_mat <- intake_mat[, good]
+intake_mat[1:3, 1:3]
+```
+And let's get the food frequency questionnaires.
+
+```{r}
+vars <- names(meta)
+ffq_vars <- vars[grepl("D_FFQ", vars)]
+idvars <- c(vars[!vars %in% ffq_vars], "D_FFQ_AV_GRAMWT_G_USDA")
+ffq <- melt(meta, id.vars=idvars, value.name="ffq_amount", variable.name="measure")
+ffq[, ffq_amount := as.numeric(ffq_amount) / as.numeric(D_FFQ_AV_GRAMWT_G_USDA)]
+ffq_mat <- dcast(ffq[!is.na(ffq_amount)], sample_id ~ measure, value.var = "ffq_amount", fill=0, fun.aggregate = sum)
+sids <- ffq_mat[, sample_id]
+ffq_mat <- as.matrix(ffq_mat[, sample_id := NULL])
+rownames(ffq_mat) <- sids
+good <- colMeans(ffq_mat > 0) > 0.5
+ffq_mat <- ffq_mat[, good]
+ffq_mat[1:3, 1:3]
+```
+
+## MEDI 
+
+Let's load the MEDI food abundances first
+
+```{r}
+foodab <- fread("data/food_abundance.csv")[reads > 0]
+foodab[, "id" := paste(matched_taxid, species, wikipedia_id, sep="|")]
+food_mat <- dcast(foodab, sample_id ~ id, value.var = "reads", fill=0, fun.aggregate = sum)
+sids <- food_mat[, sample_id]
+food_mat <- as.matrix(food_mat[, sample_id := NULL])
+rownames(food_mat) <- sids
+food_relative <- food_mat / rowSums(food_mat)
+food_relative <- food_relative[, colMeans(food_relative >0) > 0.1]
+food_relative[1:3, 1:3]
+```
+
+And now the food content.
+
+```{r}
+content <- fread("data/food_content.csv")
+content_mat <- dcast(content[!is.na(abundance)], sample_id ~ name, value.var = "abundance", fill=0, fun.aggregate = sum)
+sids <- content_mat[, sample_id]
+content_mat <- as.matrix(content_mat[, sample_id := NULL])
+rownames(content_mat) <- sids
+good <- colMeans(content_mat > 0) > 0.5
+content_mat <- content_mat[, good]
+content_mat[1:3, 1:3]
+```
+
+## Beta diversity tests
+
+Let's write a little function that runs the test for microbiome <-> other comparison and
+plots and returns the results.
+
+```{r}
+library(vegan)
+
+micro_mantel <- function(other, description) {
+  sids <- intersect(intake_means[, unique(sample_id)], rownames(other))
+  micro_dist <- vegdist(microbiome_mat[sids, ], "bray")
+  other_dist <- vegdist(other[sids, ], "bray")
+  
+  test <- mantel(micro_dist, other_dist, method="pearson")
+  results <- data.table(micro=as.numeric(micro_dist), other=as.numeric(other_dist))
+  pl <- ggplot(results) +
+    aes(x=other, y=micro) +
+    geom_point() +
+    stat_smooth(method="lm") +
+    labs(x=paste(description, "[Bray]"), y="species abundance distance [Bray]")
+  print(pl)
+  print(test)
+}
+```
+
+Now we run it for the measures.
+
+```{r}
+micro_mantel(ffq_mat, "FFQ distances")
+```
+
+```{r}
+micro_mantel(intake_mat, "24h recall distances")
+```
+```{r}
+micro_mantel(food_relative, "MEDI food distances")
+```
+
+```{r}
+micro_mantel(content_mat, "MEDI food distances")
+```

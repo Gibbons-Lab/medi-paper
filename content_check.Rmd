@@ -1,0 +1,88 @@
+---
+title: "Food content check"
+output: html_notebook
+---
+
+We start by reading the extracted food contents.
+
+```{r}
+library(data.table)
+
+contents <- fread("zcat < ~/projects/2024_medi_paper/db/data/dbs/food_contents.csv.gz")
+head(contents)
+```
+
+We will now check a few main properties.
+
+## Energy content
+
+The food contents contain measured energy content extracted from the FOODB which may be several measurements per food
+items and component. We also include energy content calculated by the Adwater method for each food and preparation type.
+Let's extract those now.
+
+```{r}
+en <- contents[grepl("Energy", name)]
+wide <- dcast(
+  en, 
+  preparation_type + wikipedia_id + food_id ~ name, 
+  value.var="standard_content", 
+  fun.aggregate=mean
+)
+wide
+```
+
+No we will compare those:
+
+```{r}
+library(ggplot2)
+theme_minimal() |> theme_set()
+wide[preparation_type %in% c("", "no"), preparation_type := "unknown"]
+wide[, cor.test(Energy, `Energy (calculated)`)]
+
+ggplot(wide) +
+  aes(x=Energy, y=`Energy (calculated)`, color=tolower(preparation_type)) +
+  geom_abline(slope=1, linewidth=0.8) +
+  geom_point()
+```
+
+## Cholesterol adjustments
+
+It is likely that for a subset of measurements cholesterol abundance was incorrectly transformed from ug to mg. This can be observed when looking at the
+histogram of the original values:
+
+```{r}
+ggplot(contents[name == "Cholesterol"]) +
+  aes(x=orig_content) +
+  geom_histogram(bins=50) +
+  scale_x_log10()
+```
+
+Given that even very high cholesterol foods (eggs, bacon etc) never exceed a few 100mg/100g the second peak is likely affected by the conversion
+error. Those values were converted to the correct mg amounts:
+
+```{r}
+ggplot(contents[name == "Cholesterol"]) +
+  aes(x=standard_content) +
+  geom_histogram(bins=50) +
+  scale_x_log10()
+```
+
+We can also check for some common food items and their cholesterol content:
+
+### Chicken (around [64-111 mg/100g](https://www.medicalnewstoday.com/articles/cholesterol-in-chicken#by-part-of-the-chicken))
+
+```{r}
+contents[name == "Cholesterol" & wikipedia_id == "Chicken", summary(standard_content)]
+```
+
+### Beef (around [78-389 mg/100g](https://www.ucsfhealth.org/education/cholesterol-content-of-foods))
+
+```{r}
+contents[name == "Cholesterol" & wikipedia_id == "Cattle", summary(standard_content)]
+```
+
+### Cod (around [43 mg/100g](https://fdc.nal.usda.gov/fdc-app.html#/food-details/171955/nutrients))
+
+```{r}
+contents[name == "Cholesterol" & wikipedia_id == "Pacific_cod", summary(standard_content)]
+```

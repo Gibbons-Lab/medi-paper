@@ -1,0 +1,227 @@
+# Food content validaton PATH1
+
+```{r}
+library(data.table)
+library(ggplot2)
+theme_minimal() |> theme_set()
+```
+
+We start by reading in the general metadata to get our sequencing to individual mapping.
+
+```{r}
+meta <- fread("data/metadata.csv")
+meta[, "sample_id" := tstrsplit(MetagenomicsFileR1, "_R")[[1]]]
+meta[, "Participant ID" := sprintf("PA%03d", SubjectID)]
+meta
+```
+
+We will also extract the FFQs.
+
+```{r}
+vars <- names(meta)
+ffq_vars <- vars[grepl("D_FFQ", vars)]
+idvars <- c(vars[!vars %in% ffq_vars], "D_FFQ_AV_GRAMWT_G_USDA")
+ffq <- melt(meta, id.vars=idvars, value.name="ffq_amount", variable.name="name")[ffq_amount > 0]
+ffq[, ffq_amount := as.numeric(ffq_amount) / as.numeric(D_FFQ_AV_GRAMWT_G_USDA)]
+head(ffq)
+```
+
+And we read the poop collection dates and merge.
+
+```{r}
+dates <- fread("data/collection_dates.csv")
+dates[, "time" := as.POSIXct(paste(Date, Time), format="%m/%d/%Y %I:%M %p")]
+dates[, "SubjectID" := tstrsplit(ID, "-")[[2]] |> as.numeric()]
+dates[, "Period" := tstrsplit(ID, "-")[[3]] |> as.numeric()]
+merged <- dates[, .(SubjectID, Period, time)][meta, on=c("SubjectID", "Period")]
+merged
+```
+
+Now we read the 24h intake data.
+
+```{r}
+scales <- c(
+  kcal = 100,
+  IU = 100,
+  g = 100 * 1000,
+  mg = 100,
+  mcg = 100 / 1000
+)
+
+intake <- fread("data/P4W1204.txt")
+idvars <- c(names(intake)[1:19])
+intake <- melt(intake, id.vars=idvars, variable.name = "measure", value.name = "amount")[amount > 1e-6]
+intake[, amount := as.numeric(amount)]
+intake <- intake[merged[, .(sample_id, `Participant ID`, Period, time, Treatment, BaselineEnd)], on="Participant ID", nomatch=0]
+intake[, amount := amount / (`Total Grams`)]
+intake[, original_unit := stringr::str_match(measure, "\\((\\w+)\\)$")[,2]]
+intake[, amount := amount * scales[original_unit]]
+intake[, "entry" := as.POSIXct(`Date of Intake`, format="%m/%d/%Y")]
+intake[, "time_diff" := time - entry]
+fwrite(intake[!is.na(original_unit)], "data/intake_processed.csv")
+intake
+```
+
+Now we read the MEDI abundances for food content.
+
+```{r}
+medi <- fread("data/food_content.csv")
+medi[name == "Cholesterol", abundance := abundance]
+medi
+```
+
+Let's compare the macronutrients. For this we will map the names for the major nutrients.
+
+```{r}
+recall_map <- c(
+  Energy = "Energy (kcal)",
+  Proteins = "Total Protein (g)",
+  `Fat` = "Total Fat (g)",
+  Carbohydrate = "Total Carbohydrate (g)",
+  `Fiber (dietary)` = "Total Dietary Fiber (g)",
+  Cholesterol = "Cholesterol (mg)",
+  Cobalamin = "Vitamin B-12 (cobalamin) (mcg)",
+  `Potassium` = "Potassium (mg)"
+)
+
+ffq_scales <- c(
+  `Energy (kcal)` = 100,              # kcal per 100g
+  `Total Protein (g)` = 100 * 1000,  # mg per 100g
+  `Total Fat (g)` = 100 * 1000,
+  `Total Carbohydrate (g)` = 100 * 1000,
+  `Total Dietary Fiber (g)` = 100 * 1000,
+  `Cholesterol (mg)` = 100,
+  `Vitamin B-12 (cobalamin) (mcg)` = 100 / 1000,
+  `Potassium (mg)` = 100
+)
+
+ffq_map <- c(
+  D_FFQ_AV_ENERGY_KCAL_USDA = "Energy (kcal)",
+  D_FFQ_AV_TOTAL_PROTEIN_G_NDSR = "Total Protein (g)",
+  D_FFQ_AV_TOTAL_FAT_G_USDA = "Total Fat (g)",
+  D_FFQ_AV_CARBOHYDRATE_G_USDA = "Total Carbohydrate (g)",
+  D_FFQ_AV_TOTAL_DIETARY_FIBER_G_NDSR = "Total Dietary Fiber (g)",
+  D_FFQ_AV_CHOLESTEROL_MG_USDA = "Cholesterol (mg)",
+  D_FFQ_AV_Supp_Vitamin_B12 = "Vitamin B-12 (cobalamin) (mcg)",
+  D_FFQ_AV_POTASSIUM_MG_USDA = "Potassium (mg)"
+)
+
+medi[, "measure" := recall_map[name]]
+ffq[, "measure" := ffq_map[name]]
+comparison <- intake[medi, on=c("sample_id", "measure"), nomatch=0]
+ffq_comparison <- ffq[!is.na(measure)][medi, on=c("sample_id", "measure"), nomatch=0, allow.cartesian=T]
+comparison <- comparison[BaselineEnd == "End"]
+
+#comparison[, amount := amount * scales[measure]]
+ffq_comparison[, ffq_amount := ffq_amount * ffq_scales[measure]]
+```
+
+```{r}
+ggplot(comparison[BaselineEnd == "End"]) +
+  aes(x=time_diff) +
+  geom_histogram(bins=20, fill="white", color="black")
+```
+
+```{r}
+means <- comparison[time_diff>48, .(
+  amount=mean(amount), 
+  sd=sd(amount),
+  se=sd(amount)/sqrt(.N),
+  n=.N,
+  time=time[1], 
+  n=uniqueN(entry), 
+  subject=`Participant ID`[1]
+  ), by=c("measure", "sample_id", "abundance")]
+
+tests <- comparison[time_diff>48, cor.test(amount, abundance, method="pearson")[c("p.value", "estimate")], by="measure"]
+tests
+```
+
+```{r, fig.width=8, fig.height=6}
+ggplot(means) +
+  aes(x=amount, y=abundance) +
+  geom_pointrange(aes(xmin=amount-se, xmax=amount+se)) +
+  geom_point() +
+  stat_smooth(method="lm") +
+  facet_wrap(~ measure, scales="free") + 
+  geom_text(data=tests, aes(x=Inf, y=Inf, label=sprintf("r=%.2g, p=%.2g", estimate, p.value)), size=3.5, vjust=1, hjust=1) +
+  labs(x="consumed [mg/100g]", y="detected in stool [mg/100g]") + scale_y_continuous(expand=c(0.25, 0))
+ggsave("nutrients_48h.pdf", width=8, height=6)
+```
+
+
+
+FFQ comparison
+
+```{r, fig.width=6, fig.height=4}
+ggplot(ffq_comparison) +
+  aes(x=ffq_amount, y=abundance) +
+  geom_point() +
+  stat_smooth(method="lm") +
+  facet_wrap(~ measure, scale="free")
+
+ffq_comparison[, cor.test(ffq_amount, abundance, method="pearson")[c("p.value", "estimate")], by=c("measure")]
+```
+By offset groups:
+
+```{r, fig.width=9, fig.height=2}
+grouped <- comparison[BaselineEnd=="End"]
+grouped[, "time_group" := Hmisc::cut2(as.numeric(time_diff), c(0, 48, 96))]
+for (m in grouped[, unique(measure)]) {
+  pl <- ggplot(grouped[measure == m]) +
+    aes(x=amount, y=abundance) +
+    geom_point() +
+    stat_smooth(method="lm") +
+    facet_wrap(~ time_group, scales="free", nrow=1) +
+    ggtitle(m)
+  show(pl)
+}
+```
+
+```{r, fig.width=6, fig.height=3}
+stats <- grouped[, .(r = cor(amount, abundance), n=.N), by=c("measure", "time_group")]
+ggplot(stats) +
+  aes(x=time_group, y=r, group=measure, color=measure) +
+  geom_hline(yintercept=0, linetype="dashed") +
+  geom_line() + geom_point() +
+  labs(x="Δt stool after diet assessment [days]", y="Pearson r [measured vs. MEDI]", color="Nutrient")
+  
+```
+
+## Adsorption fraction
+
+If we assume that both medi and recall estimates are faithful measures of the abundance $x_i$ we can estimate the fraction
+of total food making it into stool by the ratio of relative abundances:
+
+$$
+\frac{a_r}{a_m} = \frac{x_i}{total_{in}} / \frac{x_i\cdot\alpha_i}{total_{gut}} = \frac{total_{gut}}{total_{in} \alpha_i} 
+$$
+
+Here $\alpha_i$ is the adsorption fraction of the specific food. Obviously the highest adsorption is measured when $\alpha_i = 1$, so one can estimate it from the minimum mean ratio.
+
+```{r}
+adsorption <- means[, .(ratio=median(amount/abundance), ratio_sd=mad(amount/abundance)), by="measure"]
+adsorption[, "specific_adsorption" := 1 - min(ratio)/ ratio]
+adsorption
+```
+
+## Check for specific associations with foods
+
+```{r}
+foods <- fread("data/P4W1208.txt", skip = 1)
+names(foods)[1:7] <- c("study", "Participant ID", "entry", "meal_file_id", "meal_time", "meal_name", "meal_location")
+items <- names(foods)[8:ncol(foods)]
+foods <- foods[merged[, .(sample_id, `Participant ID`, Period, time, Treatment, BaselineEnd)], on="Participant ID", nomatch=0]
+foods[, "entry" := as.POSIXct(entry, format="%m/%d/%Y")]
+foods[, "time_diff" := time - entry]
+foods <- foods[BaselineEnd == "End"]
+fwrite(foods, "data/foods_processed.csv")
+foods
+```
+
+```{r}
+ab <- fread("data/food_abundance.csv")
+hib <- ab[food_id == 748]
+hib <- hib[foods, on="sample_id", allow.cartesian = T][time_diff > 24]
+hib
+```
