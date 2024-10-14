@@ -55,28 +55,35 @@ library(miso)
 config <- config_association(
   variables = "Treatment",
   taxa_rank = "species",
-  in_samples = 0.1,
+  in_samples = 0.0,
   min_abundance = 0,
   presence_threshold= 0,
   independent_weighting = FALSE,
   shrink = F,
   method="voom"
 )
-tests <- association(food_ps, config)
+tests <- association(subset_samples(food_ps, BaselineEnd == "End"), config)
 anns <- unique(foods[, .(wikipedia_id, species, matched_taxid, food_group, food_subgroup)])
 food_tests <- anns[tests, on="species"]
+food_tests[padj<0.05]
 ```
 
 ```{r, fig.width=3, fig.height=3}
 library(ggplot2)
 theme_minimal() |> theme_set()
 
-ggplot(food_tests) +
+ggplot(unique(food_tests, by="species")) +
   aes(x=log2FoldChange, y=-log10(pvalue), label=wikipedia_id, color=padj<0.05) +
   geom_label(data=food_tests[padj<0.05], hjust=1, nudge_x = -0.1) +
   geom_vline(xintercept=0, linetype="dashed") +
   guides(color="none") + scale_color_manual(values=c("black", "tomato")) +
-  labs(x="log fold-change Treatment vs. Control", y="log₁₀ p-value") +
+  labs(x="log fold-change Treatment vs. Control", y=expression(log[10]~"p-value")) +
   geom_point()
 ggsave("volcano.pdf", width=3, height=3)
+```
+
+## Figure Data
+
+```{r}
+fwrite(food_tests, "../figure_data/path1_food_tests.csv")
 ```

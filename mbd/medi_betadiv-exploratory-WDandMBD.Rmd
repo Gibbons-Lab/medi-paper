@@ -1,0 +1,555 @@
+---
+title: "Metagenomic estimation of dietary intake from human stool - beta diversity
+  tests for WD and MBD only"
+author: "Klara Filek for Diener Lab at Med Uni Graz"
+date: "2024-09-09"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries & data
+
+Data was provided by Christian Diener (food abundance, food content and metadata) and can be found in *diets/data* of the project folder. Figures and tables are in *figures/* and *tables/* folders, respectively.
+
+```{r, echo = TRUE, message = FALSE}
+library(tidyverse)
+library(vegan)
+library(readxl)
+library(patchwork)
+#library(pairwiseAdonis)
+
+# read data and metadata
+counts <- read_csv("diets/data/food_abundance.csv") 
+metadata <- read_xlsx("diets/data/Data merged by Daria 7-30-24.xlsx")
+metadata <- rename(metadata, sample_id = Run)
+
+# metadata with only necessary columns
+meta_short <- metadata %>% 
+  select(sample_id, pid, diet)
+  
+```
+
+*Optional: setting global ggplot2 theme and custom plot themes*
+
+```{r, echo = TRUE, message = FALSE}
+# set global theme for ggplot
+theme_set(theme_minimal())
+
+```
+
+## Data cleaning
+
+Removing rows with zero counts, joining diet and sample type metadata, and pivoting wider reads and relative abundance values.
+
+```{r, message = FALSE}
+# Note: RA in variable name indicates relative abundance
+# join metadata and select WD and MBD diet
+counts <- counts %>% 
+  left_join(meta_short) %>%
+  filter(diet == "WD" | diet == "MBD")
+
+# add pseudocounts
+counts_pseudo <- counts %>%
+  mutate(pseudoreads = reads+1) %>%
+  mutate(pseudototal_reads = total_reads+1) %>%
+  mutate(pseudo_RA = pseudoreads/pseudototal_reads) %>%
+  mutate(logRA = log10(pseudo_RA)) 
+
+# pivot to wider on raw counts (non-kraken)
+# wide_counts <- counts %>% 
+#   select(sample_id, reads, food_id) %>% 
+#   pivot_wider(names_from = sample_id, values_from = reads, values_fill = 0)
+
+# pivot to wider with relative abundances
+# RA_wide_counts <- counts %>% 
+#   select(sample_id, relative_abundance, food_id) %>% 
+#   pivot_wider(names_from = sample_id, values_from = relative_abundance, values_fill = 0)
+
+```
+
+## Summary stats
+
+### Number of samples per diet category
+
+```{r, echo = TRUE, message = TRUE}
+# count samples per diet category
+select(counts, diet, sample_id) %>%
+  unique() %>%
+  group_by(diet) %>%
+  count()
+
+```
+### Number of samples with food reads per diet category
+```{r, echo = TRUE, message = TRUE}
+# count samples per diet category
+select(counts %>% filter(reads > 0), diet, sample_id) %>%
+  unique() %>%
+  group_by(diet) %>%
+  count()
+
+```
+Six samples in WD diet, and 7 samples in MBD diet had no food reads.
+
+### Total food counts per sample
+
+Counts including samples with zero food counts:
+```{r, fig.width=2, fig.height=3}
+# summary of food counts per sample with log transformation; reads+1 and total_reads+1 because a full reads table is not available
+sample_tot_counts <- counts %>% 
+  #drop_na(lineage) %>% 
+  group_by(sample_id) %>%
+  summarise(sum_reads = sum(reads)) %>%
+  left_join(meta_short) %>%
+  left_join(unique(select(counts, sample_id, total_reads) 
+                   %>% group_by(sample_id))) %>%
+  mutate(sumRA = sum_reads/total_reads) %>%
+  mutate(pseudosum = sum_reads+1) %>%
+  mutate(pseudototal = total_reads+1) %>%
+  mutate(pseudoRA = pseudosum/pseudototal)
+
+# use pseudo relative abundance
+boxplot_all_WD_MBD <- sample_tot_counts %>%
+  ggplot() +
+  geom_boxplot(aes(x = diet, y = pseudoRA), 
+               outliers = FALSE, 
+               show.legend = FALSE, 
+               #width = 0.5,
+               size = 0.5,
+               alpha = 0.5) +
+  geom_jitter(aes(x = diet, y = pseudoRA), 
+              width = 0.1, 
+              size = 2, 
+              alpha = 1) +
+  scale_y_continuous(transform = 'log10') +
+  labs(x = "diet", y = "relative abundance [reads/total]")
+
+boxplot_all_WD_MBD
+
+ggsave("figures/boxplot_all_WD_MBD-pseudocountsRA.pdf", plot = boxplot_all_WD_MBD, width=2, height=3)
+```
+
+```{r}
+wilcox.test(sample_tot_counts$sumRA~sample_tot_counts$diet)
+```
+Means per diet group
+```{r}
+# Means per diet group
+mean_tot_WDMBD <- sample_tot_counts %>%
+  group_by(diet) %>%
+  summarize(mean_abundance = mean(sumRA), .groups = "drop")
+
+mean_tot_WDMBD
+
+```
+Ratio of diet group means (meanMBD/meanWD)
+```{r}
+# Calculate ratio mean(total_relative_food for MBD)/mean(total_relative_food for WD)
+MBD_RA <- sample_tot_counts %>% filter(diet == "MBD")
+WD_RA <- sample_tot_counts %>% filter(diet == "WD")
+
+mean_ratio_MBD_WD <- mean(MBD_RA$sumRA)/mean(WD_RA$sumRA)
+mean_ratio_MBD_WD
+```
+
+#### Only samples that contain food counts for visualization purposes:
+
+```{r, fig.width=2, fig.height=3}
+# summary of food counts per sample
+fsample_tot_counts <- counts %>% 
+  drop_na(lineage) %>% 
+  group_by(sample_id) %>%
+  summarise(sum_reads = sum(reads)) %>%
+  left_join(meta_short) %>%
+  left_join(unique(select(counts, sample_id, total_reads) %>% group_by(sample_id))) %>%
+  mutate(sumRA = sum_reads/total_reads) #%>%
+  # mutate(pseudosum = sum_reads+1) %>%
+  # mutate(pseudototal = total_reads+1) %>%
+  # mutate(pseudoRA = pseudosum/pseudototal)
+
+# use relative abundance, only samples containing food reads
+fboxplot_all_WD_MBD <- fsample_tot_counts %>%
+  ggplot() +
+  geom_boxplot(aes(x = diet, y = sumRA), 
+               outliers = FALSE, 
+               show.legend = FALSE, 
+               #width = 0.5,
+               size = 0.5,
+               alpha = 0.5) +
+  geom_jitter(aes(x = diet, y = sumRA), 
+              width = 0.1, 
+              size = 2, 
+              alpha = 1) +
+  scale_y_continuous(transform = 'log10') + 
+  labs(x = "diet", y = "relative abundance [reads/total]")
+
+fboxplot_all_WD_MBD
+
+ggsave("figures/boxplot_>zero_WD_MBD-RA.pdf", plot = fboxplot_all_WD_MBD, width=2, height=3)
+
+```
+```{r}
+wilcox.test(fsample_tot_counts$sumRA~fsample_tot_counts$diet)
+```
+
+Means per diet group (only samples with food reads)
+```{r}
+# Means per diet group
+fmean_tot_WDMBD <- fsample_tot_counts %>%
+  group_by(diet) %>%
+  summarize(mean_abundance = mean(sumRA), .groups = "drop")
+
+fmean_tot_WDMBD
+
+```
+Ratio of diet group means (meanMBD/meanWD) (only samples with food reads)
+```{r}
+# Calculate ratio mean(total_relative_food for MBD)/mean(total_relative_food for WD)
+fMBD_RA <- fsample_tot_counts %>% filter(diet == "MBD")
+fWD_RA <- fsample_tot_counts %>% filter(diet == "WD")
+
+fmean_ratio_MBD_WD <- mean(fMBD_RA$sumRA)/mean(fWD_RA$sumRA)
+fmean_ratio_MBD_WD
+```
+
+
+
+
+### Barplots of relative abundances of foods detected
+
+**Note:** colors for food items do not match across plots
+
+Relative abundance of food reads in "WD" samples (western diet)
+```{r}
+
+counts %>% 
+  left_join(meta_short) %>%
+  filter(diet == "WD") %>%
+  ggplot(aes(x = sample_id, y = relative_abundance)) + # set "y = reads" for raw reads
+  geom_bar(aes(fill = wikipedia_id), stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, 
+                             hjust = 0.9, size = 11, 
+                             color = "grey30"))
+
+```
+
+Relative abundance of food reads in "MBD" samples
+```{r, fig.width=11, fig.height=6}
+
+counts %>% 
+  left_join(meta_short) %>%
+  filter(diet == "MBD") %>%
+  ggplot(aes(x = sample_id, y = relative_abundance)) + # set "y = reads" for raw reads
+  geom_bar(aes(fill = wikipedia_id), stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, 
+                             hjust = 0.9, size = 11, 
+                             color = "grey30"))
+
+```
+
+### Calculate mean relative abundance of food items in diet categories
+```{r}
+# RAmeanstest <- select(counts, sample_id, food_id, relative_abundance, diet) %>%
+#   pivot_wider(id_cols = food_id, )
+# oops
+
+RAmeanstest <- counts %>% 
+  select(sample_id, relative_abundance, food_id) %>% 
+  pivot_wider(names_from = sample_id, values_from = relative_abundance, values_fill = 0) %>% 
+  pivot_longer(cols = starts_with("SR"), names_to = "sample_id", values_to = "relative_abundance") %>% 
+  drop_na(food_id) %>%
+  left_join(counts %>% select(sample_id, diet) %>% unique()) %>%
+  left_join(counts %>% select(food_id, wikipedia_id) %>% unique() %>% drop_na(food_id))
+
+# group by diet and food_id and then summarize
+mean_abundancetestWD <- RAmeanstest %>%
+  filter(diet =="WD") %>%
+  group_by(food_id) %>%
+  summarize(mean_abundance = mean(relative_abundance), .groups = "drop")
+
+mean_abundancetestMBD <- RAmeanstest %>%
+  filter(diet =="MBD") %>%
+  group_by(food_id) %>%
+  summarize(mean_abundance = mean(relative_abundance), .groups = "drop")
+
+mean_abundancetestWD <- mean_abundancetestWD %>% rename(mean_abundance_WD = mean_abundance)
+mean_abundancetestMBD <- mean_abundancetestMBD %>% rename(mean_abundance_MBD = mean_abundance)
+
+mean_abundances <- mean_abundancetestMBD %>%
+  full_join(mean_abundancetestWD) %>%
+  arrange(desc(mean_abundance_MBD)) %>%
+  left_join(unique(select(counts, food_id, wikipedia_id, food_group, food_subgroup)))
+
+mean_abundances
+```
+```{r}
+# export table to csv file
+write.table(mean_abundances, row.names = FALSE, file = "tables/mean_abudance_food_id.tsv")
+```
+
+
+Calculate fold change of shared food items in diet categories
+```{r}
+
+# fold change of mean abundances per shared food items in WD and MBD
+fold_change_MBD_WD <- mean_abundances %>% 
+  drop_na(mean_abundance_WD, mean_abundance_MBD) %>%
+  mutate(fold_changeMBDWD = mean_abundance_MBD/mean_abundance_WD)
+
+fold_change_MBD_WD %>%
+  filter(mean_abundance_MBD > 0 & mean_abundance_WD > 0)
+```
+```{r}
+# export table to csv file
+write.table(fold_change_MBD_WD, row.names = FALSE, file = "tables/fold_change_MBDtoWD.tsv")
+```
+
+### Visualize food item boxplots per food category
+
+```{r, fig.width=6, fig.height=8}
+
+food_items_RA_box <- counts %>%
+  filter(reads > 0) %>%
+  ggplot(aes(y = diet, x = relative_abundance, fill = wikipedia_id)) +
+  geom_boxplot(size = 0.5, outliers = FALSE, show.legend = FALSE) +
+  geom_jitter(show.legend = FALSE, 
+              shape = 1, 
+              width = 0.1, 
+              size = 0.4, 
+              alpha = 1) +
+  facet_grid(rows = vars(wikipedia_id), switch = "y") +
+  scale_x_continuous(transform = 'log10') +
+  scale_y_discrete(position = "right") +
+  theme(strip.text.y = element_text(angle = 0),
+        strip.text.y.left = element_text(angle = 0),
+        strip.background = element_rect(fill = "gray90", color = "transparent"),
+        strip.placement = "outside",
+        strip.switch.pad.grid = unit(5, "mm")) +
+  labs(x = "relative abundance [reads/total]",
+       y = "diet")
+
+food_items_RA_box
+ggsave("figures/food_items_RA_box.pdf", plot = food_items_RA_box, width = 6, height = 8)
+
+
+```
+
+? 
+
+
+
+## Beta diversity
+
+All analyses are performed on relative abundance data of WD and MBD samples.
+
+```{r}
+# filter to WD and MBD diet
+fcounts <- counts %>%
+  filter(reads > 0)
+
+# pivot to wider with relative abundances
+fRA_wide_counts <- fcounts %>% 
+  select(sample_id, relative_abundance, food_id) %>% 
+  pivot_wider(names_from = sample_id, values_from = relative_abundance, values_fill = 0)
+
+```
+
+Transform data and calculate Bray-Curtis distance along with PCoA and NMDS
+
+```{r, message = FALSE}
+#Note: RA prefix in variable name indicates relative abundance
+
+# transform wide tibbles in community matrix
+fRA_wide_counts_df <- t(as.matrix(column_to_rownames(fRA_wide_counts, var = "food_id")))
+
+# calculate Bray-Curtis distances
+fRA_bray_dist_reads <- vegdist(fRA_wide_counts_df, method = "bray")
+
+# PCoA
+fRA_bray_dist_reads_pcoa <- cmdscale(fRA_bray_dist_reads, eig = TRUE)
+fRA_bray_dist_reads_pcoa_points <-
+  as_tibble(fRA_bray_dist_reads_pcoa$points, rownames = "sample_id") %>%
+  rename(PC1 = V1, PC2 = V2)
+
+# NMDS
+fRA_bray_dist_reads_nmds <- metaMDS(as.matrix(fRA_bray_dist_reads),
+                    k = 3,
+                    maxit = 999, 
+                    trymax = 500,
+                    wascores = TRUE)
+# extract MDS1 and MDS2
+fRA_bray_dist_reads_nmds_points <-
+  as_tibble(fRA_bray_dist_reads_nmds$points, rownames = "sample_id") %>%
+  left_join(unique(select(counts, sample_id, diet)))
+
+# get centroids
+fRA_bray_dist_reads_nmds_centr <- fRA_bray_dist_reads_nmds_points %>%
+  group_by(diet) %>%
+  summarize(oNMDS1 = mean(MDS1), oNMDS2 = mean(MDS2))
+
+segs <- merge(fRA_bray_dist_reads_nmds_points, setNames(fRA_bray_dist_reads_nmds_centr, c('diet','oNMDS1','oNMDS2')),
+              by = 'diet', sort = FALSE)
+```
+
+```{r, message = TRUE}
+# order samples to match distance matrix for adonis2
+fRA_order_of_samples <- rownames(as.matrix(fRA_bray_dist_reads))
+fmeta_short <- meta_short %>%
+  filter(diet %in% c("WD", "MBD"))
+fmeta_short_df <- fmeta_short %>% data.frame(row.names = fmeta_short$sample_id)
+fmeta_short_df <- fmeta_short_df[match(fRA_order_of_samples, rownames(fmeta_short_df)), ]
+print("Order of samples in metadata matches distance matrix for relative abundance:")
+all(rownames(fmeta_short_df) == fRA_order_of_samples)
+```
+
+#### PERMANOVA
+```{r}
+adonis2(fRA_bray_dist_reads ~ diet, fmeta_short_df)
+
+```
+#### PCoA plot 
+```{r, message = FALSE}
+
+# Visualize PCoA
+fRA_bray_dist_reads_pcoa_points %>%
+  left_join(meta_short) %>%
+  ggplot() +
+  geom_point(aes(x = PC1, y = PC2, fill = diet, shape = diet),
+             size = 3,
+             alpha = 0.75,
+             color = "black") +
+    scale_shape_manual(values = c(21, 23))
+
+
+```
+
+#### NMDS plots
+NMDS plot with ellipses for diet types:
+```{r, message = FALSE}
+# Visualize NMDS relative abundance only WD and MBD samples
+library(ggforce)
+
+NMDS_ellipses_plot <- fRA_bray_dist_reads_nmds_points %>%
+  left_join(meta_short) %>%
+  ggplot() +
+  stat_ellipse(geom = "polygon", aes(x = MDS1, y = MDS2, color = diet, fill = diet), alpha = 0.1, show.legend = FALSE) +
+  geom_point(aes(x = MDS1, y = MDS2, fill = diet, shape = diet),
+             size = 2,
+             alpha = 1,
+             #shape = 21,
+             color = "black") +
+  scale_shape_manual(values = c(21, 23)) +
+  guides(fill = guide_legend(title="Diet"),
+         shape = guide_legend(title = "Diet")) +
+  labs(x = "NMDS1", y = "NMDS2")
+
+NMDS_ellipses_plot
+
+ggsave("figures/NMDS_ellipses_plot.pdf", plot = NMDS_ellipses_plot, width=4, height=3)
+  
+```
+
+NMDS plot with centroids and samples connected to it (spider plot)
+```{r, message = FALSE, fig.width=4, fig.height=3}
+# Visualize NMDS relative abundance only WD and MBD samples
+
+NMDS_spider_plot <- segs %>%
+  #left_join(meta_short) %>%
+  ggplot() +
+  #stat_ellipse(aes(x = MDS1, y = MDS2, color = diet)) +
+  geom_segment(mapping = aes(x = MDS1, y = MDS2, xend = oNMDS1, yend = oNMDS2, color=diet), alpha=0.5, show.legend = FALSE) +
+  #geom_point(data = fRA_bray_dist_reads_nmds_centr, aes(x = MDS1, y = MDS2, fill = diet), shape = 21, size = 5) +
+  geom_point(aes(x = MDS1, y = MDS2, fill = diet, shape = diet),
+             size = 2,
+             alpha = 1,
+             #shape = 21,
+             color = "black"
+             ) +
+  scale_shape_manual(values = c(21, 23)) +
+  guides(fill = guide_legend(title="diet"),
+         shape = guide_legend(title = "diet")) +
+  labs(x = "NMDS1", y = "NMDS2")
+
+NMDS_spider_plot
+
+ggsave("figures/NMDS_spider_plot.pdf", plot = NMDS_spider_plot, width=4, height=3)
+  
+```
+
+NMDS combined ellipses and spider plots
+```{r, message = FALSE}
+# Visualize NMDS relative abundance only WD and MBD samples
+
+NMDS_elispider_plot <- segs %>%
+  #left_join(meta_short) %>%
+  ggplot() +
+  stat_ellipse(geom = "polygon", aes(x = MDS1, y = MDS2, color = diet, fill = diet), alpha = 0.1, show.legend = FALSE) +
+  geom_segment(mapping = aes(x = MDS1, y = MDS2, xend = oNMDS1, yend = oNMDS2), color = "gray70", show.legend = FALSE) +
+  #geom_point(data = fRA_bray_dist_reads_nmds_centr, aes(x = MDS1, y = MDS2, fill = diet), shape = 21, size = 5) +
+  geom_point(aes(x = MDS1, y = MDS2, 
+                 fill = diet, shape = diet),
+             size = 2,
+             alpha = 1,
+             #shape = 21,
+             color = "black"
+             ) +
+  scale_shape_manual(values = c(21, 23)) +
+  guides(fill = guide_legend(title="Diet"),
+         shape = guide_legend(title = "Diet")) +
+  labs(x = "NMDS1", y = "NMDS2")
+
+NMDS_elispider_plot
+
+ggsave("figures/NMDS_elispider_plot.pdf", plot = NMDS_elispider_plot, width=4, height=3)
+  
+```
+
+```{r}
+print("Stress:")
+fRA_bray_dist_reads_nmds$stress
+```
+
+Dispersion test with PERMDISP on Bray-Curtis distances
+``` {r}
+segs_dist <- segs %>%
+  mutate(distance = sqrt((MDS1 - oNMDS1)^2 + (MDS2 - oNMDS2)^2))
+
+permdisp1 <- betadisper(d = fRA_bray_dist_reads, group = fmeta_short_df$diet)
+
+anova(permdisp1)
+```
+``` {r}
+plot(permdisp1)
+```
+
+# Patch the plots and save
+```{r}
+
+p1 <- fboxplot_all_WD_MBD + 
+  labs(tag = "a)")
+
+p2 <- NMDS_spider_plot +
+  labs(tag = "b)")
+  
+p3 <- food_items_RA_box +
+  labs(tag = "c)")
+
+patchplot <-
+(p1/p2) + p3 + 
+  plot_layout(design = c("ACC
+                          BCC"))
+patchplot
+ggsave(plot = patchplot, "figures/patchplot.pdf", width = 12, height = 9)
+```
+
+## Figure Data
+
+```{r}
+fwrite(segs, "../figure_data/mbd_nmds.csv")
+fwrite(fsample_tot_counts, "../figure_data/mbd_total_food.csv")
+fwrite(counts, "../figure_data/mbd_food_counts.csv")
+```

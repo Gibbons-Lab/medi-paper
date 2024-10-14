@@ -127,26 +127,26 @@ means <- comparison[time_diff>48, .(
   amount=mean(amount), 
   sd=sd(amount),
   se=sd(amount)/sqrt(.N),
-  n=.N,
   time=time[1], 
   n=uniqueN(entry), 
-  subject=`Participant ID`[1]
+  subject=`Participant ID`[1],
+  diet=Treatment[1]
   ), by=c("measure", "sample_id", "abundance")]
 
 tests <- comparison[time_diff>48, cor.test(amount, abundance, method="pearson")[c("p.value", "estimate")], by="measure"]
 tests
 ```
 
-```{r, fig.width=8, fig.height=6}
+```{r, fig.width=10, fig.height=4}
 ggplot(means) +
   aes(x=amount, y=abundance) +
   geom_pointrange(aes(xmin=amount-se, xmax=amount+se)) +
   geom_point() +
   stat_smooth(method="lm") +
-  facet_wrap(~ measure, scales="free") + 
+  facet_wrap(~ measure, scales="free", nrow=2) + 
   geom_text(data=tests, aes(x=Inf, y=Inf, label=sprintf("r=%.2g, p=%.2g", estimate, p.value)), size=3.5, vjust=1, hjust=1) +
   labs(x="consumed [mg/100g]", y="detected in stool [mg/100g]") + scale_y_continuous(expand=c(0.25, 0))
-ggsave("nutrients_48h.pdf", width=8, height=6)
+ggsave("nutrients_48h.pdf", width=10, height=4)
 ```
 
 
@@ -185,43 +185,30 @@ ggplot(stats) +
   geom_hline(yintercept=0, linetype="dashed") +
   geom_line() + geom_point() +
   labs(x="Δt stool after diet assessment [days]", y="Pearson r [measured vs. MEDI]", color="Nutrient")
-  
+ggsave("../figures/path_offset_stats.pdf", width=6, height=3)  
 ```
 
-## Adsorption fraction
+## Figure Data
 
-If we assume that both medi and recall estimates are faithful measures of the abundance $x_i$ we can estimate the fraction
-of total food making it into stool by the ratio of relative abundances:
-
-$$
-\frac{a_r}{a_m} = \frac{x_i}{total_{in}} / \frac{x_i\cdot\alpha_i}{total_{gut}} = \frac{total_{gut}}{total_{in} \alpha_i} 
-$$
-
-Here $\alpha_i$ is the adsorption fraction of the specific food. Obviously the highest adsorption is measured when $\alpha_i = 1$, so one can estimate it from the minimum mean ratio.
+We assemble all the tables first
 
 ```{r}
-adsorption <- means[, .(ratio=median(amount/abundance), ratio_sd=mad(amount/abundance)), by="measure"]
-adsorption[, "specific_adsorption" := 1 - min(ratio)/ ratio]
-adsorption
+fig_data <- list(
+  `Fig. 3B` = fread("../figure_data/mbd_nmds.csv"),
+  `Fig. 3C` = fread("../figure_data/mbd_total_food.csv"),
+  `Fig. 3D` = fread("../figure_data/path1_food_tests.csv"),
+  `Fig. 3E` = means
+)
+
+si_figs <- list(
+  `Fig. S2A` = fread("../figure_data/mbd_food_counts.csv"),
+  `Fig. S2B` = stats
+)
 ```
 
-## Check for specific associations with foods
+And we save them.
 
 ```{r}
-foods <- fread("data/P4W1208.txt", skip = 1)
-names(foods)[1:7] <- c("study", "Participant ID", "entry", "meal_file_id", "meal_time", "meal_name", "meal_location")
-items <- names(foods)[8:ncol(foods)]
-foods <- foods[merged[, .(sample_id, `Participant ID`, Period, time, Treatment, BaselineEnd)], on="Participant ID", nomatch=0]
-foods[, "entry" := as.POSIXct(entry, format="%m/%d/%Y")]
-foods[, "time_diff" := time - entry]
-foods <- foods[BaselineEnd == "End"]
-fwrite(foods, "data/foods_processed.csv")
-foods
-```
-
-```{r}
-ab <- fread("data/food_abundance.csv")
-hib <- ab[food_id == 748]
-hib <- hib[foods, on="sample_id", allow.cartesian = T][time_diff > 24]
-hib
+openxlsx::write.xlsx(fig_data, "../figure_data/fig3.xlsx")
+openxlsx::write.xlsx(si_figs, "../figure_data/figS2.xlsx")
 ```

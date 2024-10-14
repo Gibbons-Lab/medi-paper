@@ -5,7 +5,7 @@ Let's start by reading the annotations.
 ```{r}
 library(data.table)
 
-seqs <- fread("db/data/manifest.csv")
+seqs <- fread("db/data/medi_db/manifest.csv")
 seqs[phylum == "", phylum := paste0("[", class, "]")]
 seqs[, "taxa" := basename(filename)]
 seqs[, sum(seqlength)/1e9]
@@ -15,7 +15,7 @@ seqs[, table(db, rank)]
 And let's look at the matched foods:
 
 ```{r}
-foods <- fread("db/data/medi_db/food_matches.csv")
+foods <- fread("db/data/dbs/food_matches.csv")
 foods[, table(db)]
 ```
 
@@ -79,15 +79,20 @@ Now we will start summarizing them over individual organisms.
 macros <- c("Proteins", "Carbohydrate", "Fiber (dietary)", "Fatty acids") 
 
 broad_prepration <- function (classes) {
+  tab <- table(classes)
+  common <- names(tab)[which.min(tab)]
   allpreps <- paste0(unique(classes), collapse=",")
-  if (grepl("raw", allpreps)) {
+  if (grepl("raw", common)) {
     return("raw")
   }
-  if (grepl("cooked", allpreps)) {
+  if (grepl("cooked", common)) {
     return("cooked")
   }
-  if (grepl("oil", allpreps)) {
+  if (grepl("oil", common)) {
     return("oil")
+  }
+  if (grepl("dried", common)) {
+    return("dried or powder")
   }
   return("other")
 }
@@ -100,6 +105,7 @@ collapsed <- contents[, .(
   by=c("compound_id", "matched_taxid", "name", "food_group", 
        "food_subgroup", "phylum", "genus", "species", "db", "rank")
 ]
+collapsed[, preparation := factor(preparation, c("raw", "cooked", "dried or powder", "oil", "other"))]
 collapsed <- collapsed[seqs, on="matched_taxid", nomatch=0]
 collapsed[name %chin% macros, "relative" := amount / sum(amount), by="matched_taxid"]
 uniq_foods <- unique(collapsed, by="matched_taxid")
@@ -195,7 +201,91 @@ mantel(D_macros, as.dist(1-ani[taxa, taxa]), method="spear")
 ggplot(dt) +
   aes(x=divergence, y=macro_dist/1000) +
   geom_point(stroke=0, size=1, alpha=0.5) +
-  stat_smooth(aes(x=divergence), method="gam")
+  stat_smooth(aes(x=divergence), method="gam") +
   labs(x="1-ANI", y="macronutrient distance [g/100g]")
 ggsave("figures/ani_vs_macros.png", width=6, height=4, dpi=300)
+```
+
+## Mapping speed
+
+```{r}
+library(stringr)
+pattern <- "(\\d+) sequences \\(([\\d\\.]+) Mbp\\) processed in ([\\d\\.]+)s"
+
+speeds <- function(path) {
+  lines <- readLines(con = path)
+  matches <- str_match(lines, pattern)
+  matches <- apply(matches[!is.na(matches[, 1]), 2:4], 2, as.numeric)
+  matches <- as.data.table(matches)
+  names(matches) <- c("nreads", "size_mbps", "time_seconds")
+  matches[, "path" := path]
+  matches[, "iteration" := 1:.N]
+  return(matches)
+}
+```
+
+```{r, fig.height=4, fig.width=5}
+library(patchwork)
+
+measures <- rbind(
+  speeds("metacardis/data/kraken_batch1.log"),
+  speeds("metacardis/data/kraken_batch2.log")
+)
+
+timeplot <- ggplot(measures) +
+  aes(x=iteration, y=time_seconds/nreads*1e6, color=path, group=path) +
+  geom_point() +
+  scale_y_log10() +
+  labs(y="time per 1M reads [s]") +
+  guides(color="none")
+
+rateplot <- ggplot(measures[iteration > 0]) +
+  aes(x=nreads/time_seconds, fill=path, group=path) +
+  stat_density(position="stack") +
+    geom_vline(aes(xintercept=median(nreads/time_seconds))) +
+  guides(fill="none") + labs(x="classification rate [reads/second]")
+
+timeplot / rateplot
+ggsave("figures/kraken_benchmarks.pdf", width=5, height=4)
+```
+
+## Write figure data
+
+```{r}
+fig_data <- list(
+  `Fig. 1A/B` = seqs,
+  `Fig. 1C` = collapsed
+)
+
+si_data <- list(
+  `Fig. S1A` = dt,
+  `Fig. S1B` = measures,
+  `Fig. S1C` = fread("figure_data/ihmp_genome_size.csv")
+)
+```
+
+```{r}
+library(openxlsx)
+write.xlsx(fig_data, "figure_data/fig1.xlsx")
+write.xlsx(si_data, "figure_data/figS1.xlsx")
+```
+
+DB Stats
+
+```{r}
+contents <- fread("db/data/dbs/food_contents.csv.gz")
+```
+
+```{r}
+summ <- contents[, .(
+  median_content = median(standard_content), 
+  min_content = min(standard_content),
+  max_content = max(standard_content),
+  iqr_content=iqr(standard_content), 
+  n_foods_measured=uniqueN(food_id)
+  ),
+  by = c("compound_id", "name", "mono_mass", "source_type", "unit")               
+][, "n_total_foods" := nrow(foods)]
+fwrite(summ, "db/data/content_summaries.csv")
+summ
 ```

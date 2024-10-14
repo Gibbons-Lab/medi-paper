@@ -1,0 +1,25 @@
+"food_id" "mean_abundance_MBD" "mean_abundance_WD" "wikipedia_id" "food_group" "food_subgroup" "fold_changeMBDWD"
+101 0.000173434394561157 0 "Flax" "Herbs and Spices" "Oilseed crops" Inf
+450 3.43069772272959e-05 0 "Quinoa" "Herbs and Spices" "Other seeds" Inf
+22 1.49578300988229e-05 0 "Oat" "Cereals and cereal products" "Cereals" Inf
+457 1.39836103047201e-05 1.98144735333698e-05 "Roselle_(plant)" "Herbs and Spices" "Herbs" 0.705727067699788
+748 1.39836103047201e-05 1.98144735333698e-05 "Hibiscus_tea" "Teas" "Herbal teas" 0.705727067699788
+334 1.01911124020835e-05 0 "Chicken" "Animal foods" "Poultry" Inf
+169 7.63512688898641e-06 0 "Rye" "Cereals and cereal products" "Cereals" Inf
+178 5.27480900405385e-06 0 "Spinach" "Vegetables" "Leaf vegetables" Inf
+83 5.19736170473129e-06 0 "Strawberry" "Fruits" "Berries" Inf
+205 4.35260169504899e-06 0 "Corn" "Cereals and cereal products" "Cereals" Inf
+170 3.46880551835055e-06 0 "Sesame" "Herbs and Spices" "Oilseed crops" Inf
+148 3.43523544577843e-06 0 "Prunus_dulcis" "Nuts" "Nuts" Inf
+187 3.0220768416527e-06 4.17164021247525e-06 "Common wheat" "Cereals and cereal products" "Cereals" 0.724433720965488
+88 2.52240029145455e-06 0 "Barley" "Cereals and cereal products" "Cereals" Inf
+95 5.94418693499981e-07 3.48049189092599e-07 "Lettuce" "Vegetables" "Leaf vegetables" 1.7078582916676
+505 3.0017284121796e-07 0 "Meleagris_gallopavo" "Animal foods" "Poultry" Inf
+321 2.20038621945566e-07 0 "Butternut squash" "Gourds" "Gourds" Inf
+141 1.5748758997791e-07 0 "Pea" "Pulses" "Peas" Inf
+8 1.11957910990774e-07 0 "Garlic" "Herbs and Spices" "Herbs" Inf
+880 1.11957910990774e-07 0 "Garlic" "Herbs and Spices" "Herbs" Inf
+15 0 4.27844488354125e-07 "Wild celery" "Herbs and Spices" "Spices" 0
+214 0 4.27844488354125e-07 "Celeriac" "Vegetables" "Root vegetables" 0
+215 0 4.27844488354125e-07 "Apium_graveolens" "Vegetables" "Stalk vegetables" 0
+249 0 4.27844488354125e-07 "Apium_graveolens_var._secalinum" "Herbs and Spices" "Herbs" 0

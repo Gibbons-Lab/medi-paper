@@ -67,7 +67,7 @@ for (i in 1:length(tests)) {
   dt <- dt[group %chin% names(freqs) & ns[group, N] >= 10]
   dt[, "frequency" := freqs[group]]
   dt[, group := factor(group, levels=names(freqs)[names(freqs) %in% group])]
-  dt[, "relative" := (abundance + 1) / (total_reads + 1)]
+  dt[, "relative" := (abundance + 1) / (total_reads)]
   dt[, "item" := name]
   plots[[name]] <- ggplot(dt) + aes(x=group, y=log10(relative)) + 
     geom_jitter(width=0.3) + 
@@ -76,7 +76,7 @@ for (i in 1:length(tests)) {
     labs(title=name, x="consumption frequency [servings/day]", y="abundance")
   print(name)
   abmod <- lm(log10(relative) ~ frequency, data=dt)
-  premod <- glm((abundance > 0) ~ frequency, data=dt)
+  premod <- glm((abundance > 0) ~ frequency, data=dt, family=binomial(link="logit"))
   tables[[name]] <- dt
   results[[name]] <- dt[, .(n=.N, relative=mean(log10(relative*1e6)), sd=sd(log10(relative*1e6)), detected=sum(abundance > 0), item=name), by="group"]
   results[[name]][, "p_abundance" := summary(abmod)$coefficients[2, 4]]
@@ -84,30 +84,21 @@ for (i in 1:length(tests)) {
 }
 ```
 
-```{r, fig.width=3, fig.height=11}
+```{r, fig.width=2.5, fig.height=9}
 r <- rbindlist(results)
 ta <- rbindlist(tables)
 ggplot(r) +
   aes(x=group, y=relative) +
   geom_jitter(data=ta, aes(y=log10(relative*1e6)), stroke=0, size=0.5, width=0.3) +
-  #geom_boxplot(outlier.color="NA") +
   geom_pointrange(aes(ymin=relative-sd, ymax=relative+sd), shape=21, fill="white") +
-  geom_text(data=unique(r, by="item"), aes(x=0, y=Inf, label=sprintf("p[t-test]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
+  geom_text(data=unique(r, by="item"), aes(x=0, y=Inf, label=sprintf("p[lm]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
   facet_wrap(~ item, ncol=2) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  labs(x="", y="log-relative abundance [log₁₀RPM]") +
+  labs(x="", y=expression(paste("log relative abundance [",log[10],RPM, "]"))) +
   guides(color=F)
-ggsave("figures/ihmp_foods.png", width=3, height=11, dpi=300)
+ggsave("figures/ihmp_foods.pdf", width=2.5, height=9)
 ```
 
-
-```{r, fig.width=5, fig.height=3}
-rare <- foods[, .(n=sum(reads > 0), reads=sum(reads), total_reads=max(total_reads)), by="sample_id"]
-ggplot(rare[n>0], aes(x=total_reads, y=reads)) + geom_point() + stat_smooth(method="lm", color="tomato") +
-  labs(x="library size (#reads in sample)", y="#food reads") + scale_x_log10() + scale_y_log10()
-cor.test(rare$total_reads, rare$reads)
-ggsave("figures/food_reads.pdf", width=5, height=3)
-``` 
 
 ```{r, fig.width=5, fig.height=3}
 ggplot(foods[seqlength>1e6], aes(x=seqlength/1e9, y=relative_abundance)) + geom_point() + stat_smooth(method="lm", color="tomato") +
@@ -161,33 +152,115 @@ plots and returns the results.
 ```{r}
 library(vegan)
 
-micro_mantel <- function(first, other, description) {
+micro_mantel <- function(first, other, firstname, othername) {
   sids <- intersect(rownames(first), rownames(other))
-  micro_dist <- vegdist(first[sids, ], "bray")
+  first_dist <- vegdist(first[sids, ], "bray")
   other_dist <- vegdist(other[sids, ], "bray")
   
-  test <- mantel(micro_dist, other_dist, method="pearson")
-  results <- data.table(micro=as.numeric(micro_dist), other=as.numeric(other_dist))
+  test <- mantel(first_dist, other_dist, method="pearson")
+  results <- data.table(first=as.numeric(first_dist), other=as.numeric(other_dist))
   pl <- ggplot(results) +
-    aes(x=other, y=micro) +
+    aes(x=first, y=other) +
     geom_point(size=1, alpha=0.25, stroke=0) +
     stat_smooth(method="lm") +
-    labs(x=paste(description, "[Bray]"), y="species abundance distance [Bray]")
+    labs(x=paste(firstname, "distance [Bray]"), y=paste(othername, "distance [Bray]"))
   print(pl)
-  print(test)
+  return(data.table(x=firstname, y=othername, r=test$statistic, p=test$signif, perms=tests$permutations))
 }
 ```
 
 Now we run it for the measures.
 
 ```{r}
-micro_mantel(microbiome_relative, diet, "FFQ vs. Microbiome")
+mantel_tests <- list(
+  micro_mantel(microbiome_relative, diet, "microbiome", "FFQ"),
+  micro_mantel(microbiome_relative, food_relative, "microbiome", "MEDI"),
+  micro_mantel(diet, food_relative, "FFQ", "MEDI")
+) |> rbindlist()
+mantel_tests
 ```
 
-```{r}
-micro_mantel(microbiome_relative, food_relative, "MEDI vs. Microbiome")
-```
+## Figure data
 
 ```{r}
-micro_mantel(food_relative, diet, "FFQ vs. MEDI")
+fwrite(ta, "figure_data/iHMP_points.csv")
+fwrite(r, "figure_data/iHMP_summaries.csv")
+fwrite(mantel_tests, "figure_data/iHMP_mantel.csv")
+
+fwrite(foods[seqlength>1e6], "figure_data/ihmp_genome_size.csv")
+```
+
+## Analysis for hibiscus reads
+
+```{r, fig.width=4, fig.height=3}
+library(patchwork)
+
+tables <- list()
+
+freqs <- c(
+  `No, I did not consume these products in the last 7 days` = 0,
+  `Within the past 4 to 7 days` = 1/5.5,
+  `Within the past 2 to 3 days` = 1/2.5,
+  `Yesterday, 1 to 2 times` = 1.5,                                
+  `Yesterday, 3 or more times` = 3,
+  `NA` = 0
+)
+tests <- names(metadata)[72:92][-11]
+
+results <- list()
+plots <- list()
+merged <- metadata[foods, on=c(`Run` = "sample_id")]
+for (i in 1:length(tests)) {
+  name <- tests[i]
+  dt <- merged[, .(abundance=sum(reads[genus=="Hibiscus"]), group=.SD[[name]][1], total_reads=total_reads[1]), by="External ID"]
+  ns <- dt[, .N, by="group"] |> setkey(group)
+  dt <- dt[group %chin% names(freqs) & ns[group, N] >= 10]
+  dt[, "frequency" := freqs[group]]
+  dt[, group := factor(group, levels=names(freqs)[names(freqs) %in% group])]
+  dt[, "relative" := (abundance + 1) / (total_reads)]
+  dt[, "item" := name]
+  if (dt[, uniqueN(group) == 1])  {
+    next
+  }
+  plots[[name]] <- ggplot(dt) + aes(x=group, y=log10(relative)) + 
+    geom_jitter(width=0.3) + 
+    geom_boxplot(width=0.1) + 
+    stat_smooth(aes(group=1), method="lm") + 
+    labs(title=name, x="consumption frequency [servings/day]", y="abundance")
+  print(name)
+  abmod <- lm(log10(relative) ~ frequency, data=dt)
+  premod <- glm((abundance > 0) ~ frequency, data=dt, family=binomial(link="logit"))
+  tables[[name]] <- dt
+  results[[name]] <- dt[, .(n=.N, relative=mean(log10(relative*1e6)), sd=sd(log10(relative*1e6)), detected=sum(abundance > 0), item=name), by="group"]
+  results[[name]][, "p_abundance" := summary(abmod)$coefficients[2, 4]]
+  results[[name]][, "p_prevalence" := summary(premod)$coefficients[2, 4]]
+}
+```
+
+```{r, fig.width=8, fig.height=6}
+r <- rbindlist(results)
+ta <- rbindlist(tables)
+sig <- r[p_abundance < 0.05/length(results)]
+ggplot(sig) +
+  aes(x=group, y=relative) +
+  geom_jitter(data=ta[item %in% sig$item], 
+              aes(y=log10(relative*1e6)), stroke=0, size=0.5, width=0.3) +
+  geom_pointrange(aes(ymin=relative-sd, ymax=relative+sd), shape=21, fill="white") +
+  geom_text(data=unique(sig, by="item"), aes(x=0, y=Inf, label=sprintf("p[lm]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
+  facet_wrap(~ item, nrow=1, labeller = labeller(item = label_wrap_gen(40))) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(x="", y=expression(paste("Hibiscus abundance [",log[10],RPM, "]"))) +
+  guides(color=F)
+ggsave("figures/hibiscus.pdf", width=8, height=6)
+```
+
+## Figure Data
+
+```{r}
+openxlsx::write.xlsx(
+  list(`Fig. ED6 (individual)` = ta, `Fig. ED6 (summaries)` = r),
+  "figure_data/figED6.xlsx"
+)
+
+fwrite(metadata, "figure_data/ihmp_metadata.csv")
 ```

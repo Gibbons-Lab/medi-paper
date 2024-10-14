@@ -27,7 +27,7 @@ food_abundances <- food_abundances[meta, on=c(sample_id="Run")]
 food_contents <- food_contents[meta, on=c(sample_id="Run")]
 ```
 
-```{r, fig.width=6, fig.height=4}
+```{r, fig.width=5, fig.height=4}
 library(ggplot2)
 theme_minimal() |> theme_set()
 
@@ -58,15 +58,15 @@ solid_foods <- totals[grepl("Fruits|Meat|Cereal|Sweets", Host_Diet), .(onset=min
 
 ggplot(totals[!is.na(total_reads)]) +
   annotate(geom = "rect", xmin=solid_foods[, quantile(onset, 0.25)], xmax=solid_foods[, quantile(onset, 0.75)], ymin=0, ymax=Inf, fill="black", color=NA, alpha=0.15) +
-  aes(x=host_age_days, y=(reads + 1)/(total_reads + 1), color=bac/total_reads < 0.95) +
+  aes(x=host_age_days, y=(reads + 1)/(total_reads), color=bac/total_reads < 0.95) +
   scale_color_manual(values=c("black", "tomato")) +
   geom_point() +
   stat_smooth(data=totals[host_age_days >3], method="gam", col="blue") +
-  labs(x="infant age [days]", y="fraction of food reads [reads + 1/total]") +
+  labs(x="infant age [days]", y="relative abundance [reads/total]") +
   scale_y_log10(label = scales::percent_format(scale=100)) + 
   guides(color=FALSE)
   
-ggsave("figures/infant_total_food.pdf", dpi=300, width=6, height=4)
+ggsave("figures/infant_total_food.pdf", dpi=300, width=5, height=4)
 ```
 
 Let's test if there is a significant effect of age on food reads in a repeated samples set up.
@@ -83,8 +83,18 @@ fit <- lmer(
 summary(fit)
 ```
 
+```{r}
+pfit <- glm(
+  (reads > 0) ~                           
+      host_del_route + host_age_months,
+  data=totals,
+  family=binomial(link="logit")
+)
+summary(pfit)
+```
 
-```{r, fig.width=4, fig.height=3}
+
+```{r, fig.width=3.5, fig.height=3}
 macros <- c("Proteins", "Carbohydrate", "Fiber (dietary)", "Fat", "Energy", "Fatty acids") 
 
 adults <- fread("ihmp/data/food_content.csv")[name %chin% macros]
@@ -95,10 +105,10 @@ ggplot(cohorts[name != "Energy"]) +
   geom_boxplot(position="dodge") + 
   labs(x="", y="abundance/portion [g/100g]") +
   theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
-ggsave("figures/macros.pdf", width=4, height=3)
+ggsave("figures/macros.pdf", width=3.5, height=3)
 ```
 
-```{r, fig.width=2, fig.height=3}
+```{r, fig.width=2, fig.height=2.5}
 cor.test(~ abundance + host_age_days, food_contents[name == "Energy"])
 t.test(abundance ~ cohort, data=cohorts[name == "Energy"])
 ggplot(cohorts[name == "Energy"]) +
@@ -106,10 +116,10 @@ ggplot(cohorts[name == "Energy"]) +
   geom_boxplot() + 
   labs(x="", y="energy/portion [kcal/100g]") +
   theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
-ggsave("figures/energy.pdf", width=2, height=3)
+ggsave("figures/energy.pdf", width=2, height=2.5)
 ```
 
-```{r, fig.width=6, fig.height=2}
+```{r, fig.width=5, fig.height=2}
 detected <- rbind(
   totals[, .(detected=sum(reads > 0), n=.N), by="age_group"],
   data.table(age_group="adult", detected=adults[, uniqueN(sample_id)], n=365)
@@ -118,9 +128,10 @@ fisher.test(totals[, table(reads > 0, age_group)], simulate.p.value = T)
 
 ggplot(detected, aes(x=age_group, y=detected/n)) +
   geom_bar(stat="identity", fill="black") +
-  labs(x="age quantile [days]", y="food prevalence") +
-  scale_y_continuous(labels=scales::percent_format(), limits=c(0, 1))
-ggsave("figures/food_prevalence.pdf", width=6, height=2)
+  labs(x="age quantile [days]", y="proportion of samples\nwith detected foods [%]") +
+  scale_y_continuous(labels=scales::percent_format(), limits=c(0, 1)) +
+  theme(axis.text.x = element_text(angle = 30, vjust = 1, hjust=1))
+ggsave("figures/food_prevalence.pdf", width=5, height=2)
 ```
 
 ```{r, fig.width=4, fig.height=3}
@@ -140,7 +151,7 @@ hum <- ggplot(totals, aes(x=host_age_days, y=human/total_reads, color=host_del_r
   labs(x="infant age [days]", y="human reads [%total]", color="delivery route") +
   scale_y_log10()
 bac + hum
-ggsave("figures/bac_human_reads.png", dpi=300, width=8, height=3)
+ggsave("figures/figS3.pdf", width=8, height=3)
 ```
 
 ```{r, fig.width=3, fig.height=4}
@@ -164,7 +175,7 @@ for (i in 1:length(tests)) {
   dt[, "item" := name]
   print(name)
   abmod <- lm(log10(relative) ~ as.numeric(group), data=dt)
-  premod <- glm((abundance > 0) ~ as.numeric(group), data=dt)
+  premod <- glm((abundance > 0) ~ as.numeric(group), data=dt, family=binomial(link='logit'))
   tables[[name]] <- dt
   results[[name]] <- dt[, .(n=.N, log_rpm=mean(log10(relative*1e6)), sd=sd(log10(relative)), detected=sum(abundance > 0), item=name), by="group"]
   results[[name]][, "p_abundance" := summary(abmod)$coefficients[2, 4]]
@@ -172,7 +183,7 @@ for (i in 1:length(tests)) {
 }
 ```
 
-```{r, fig.width=2, fig.height=9}
+```{r, fig.width=1.5, fig.height=4.5}
 r <- rbindlist(results)
 ta <- rbindlist(tables)
 ggplot(r) +
@@ -180,10 +191,40 @@ ggplot(r) +
   geom_jitter(data=ta, aes(y=log10(relative*1e6)), stroke=0, size=0.5, width=0.3) +
   #geom_boxplot(outlier.color="NA") +
   geom_pointrange(aes(ymin=log_rpm-sd, ymax=log_rpm+sd), shape=21, fill="white") +
-  geom_text(data=unique(r, by="item"), aes(x=0, y=5, label=sprintf("p[t-test]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
+  geom_text(data=unique(r, by="item"), aes(x=0, y=Inf, label=sprintf("p[t-test]=%.2g\np[logit]=%.2g", p_abundance, p_prevalence)), size=3, vjust=1, hjust=0, nudge_y=0.5) +
   facet_wrap(~ item, ncol=1) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  labs(x="", y="log-relative abundance [log₁₀RPM]") +
+  labs(x="", y=expression(paste("log relative abundance [",log[10],RPM, "]"))) +
   guides(color=F)
-ggsave("figures/infant_foods.png", width=2, height=9, dpi=300)
+ggsave("figures/infant_foods.pdf", width=1.5, height=4.5)
+```
+## Figure Data
+
+We assemble all the individual data first:
+
+```{r}
+fig_data <- list(
+  `Fig. 4A` = detected,
+  `Fig. 4B` = totals,
+  `Fig. 4C` = cohorts[name == "Energy"],
+  `Fig. 4D` = cohorts[name != "Energy"],
+  `Fig. 4E` = fread("figure_data/iHMP_mantel.csv"),
+  `Fig. 4F (individual)` = ta,
+  `Fig. 4F (summaries)` = r,
+  `Fig. 4G (individual)` = fread("figure_data/iHMP_points.csv"),
+  `Fig. 4G (summaries)` = fread("figure_data/iHMP_summaries.csv")
+)
+
+si_data <- list(
+  `Fig. S3` = totals
+)
+```
+
+And we save everything:
+
+```{r}
+library(openxlsx)
+
+write.xlsx(fig_data, "figure_data/fig4.xlsx")
+write.xlsx(si_data, "figure_data/figS3.xlsx")
 ```

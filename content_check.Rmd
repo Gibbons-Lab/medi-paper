@@ -43,6 +43,8 @@ ggplot(wide) +
   aes(x=Energy, y=`Energy (calculated)`, color=tolower(preparation_type)) +
   geom_abline(slope=1, linewidth=0.8) +
   geom_point()
+
+ggsave("figures/energy_orig_vs_adwater.pdf")
 ```
 
 ## Cholesterol adjustments
@@ -55,6 +57,7 @@ ggplot(contents[name == "Cholesterol"]) +
   aes(x=orig_content) +
   geom_histogram(bins=50) +
   scale_x_log10()
+ggsave("figures/cholesterol_original.pdf")
 ```
 
 Given that even very high cholesterol foods (eggs, bacon etc) never exceed a few 100mg/100g the second peak is likely affected by the conversion
@@ -85,4 +88,15 @@ contents[name == "Cholesterol" & wikipedia_id == "Cattle", summary(standard_cont
 
 ```{r}
 contents[name == "Cholesterol" & wikipedia_id == "Pacific_cod", summary(standard_content)]
+```
+
+## Figure Data
+
+```{r}
+si_data <- list(
+  `Fig. S5A` = wide,
+  `Fig. S5B` = contents[name == "Cholesterol"]
+)
+
+openxlsx::write.xlsx("figure_data/figS5.xlsx")
 ```

@@ -6,16 +6,12 @@ We start by reading in the metadata from METACARDIS using the SI from https://ww
 library(data.table)
 library(readxl)
 
-GROUPS <- c(`8`="healthy", `2a`="obese w/o diabetes", `2b`="eligible for bariatric surgery", `1`="metabolic syndrome only", `3`="T2D")
-
-meta <- read_excel("metacardis/data/41586_2021_4177_MOESM3_ESM.xlsx", "ST 1b") |>
-  as.data.table() |> unique(by="SampleID")
-meta[, "sample_id" := paste0("M0", SampleID)]
+meta <- read_excel("metacardis/data/41591_2022_1688_MOESM3_ESM.xlsx", "ST14", skip=1) |> 
+  as.data.table() |> unique(by="ID")
+meta[, "sample_id" := paste0("M0", ID)]
 meta[, "group" := "unhealthy"]
-meta[PatientGroup=="8", group:="healthy"]
-meta[, "detailed_group" := factor(GROUPS[PatientGroup], levels=GROUPS)]
-meta[, "group" := factor(group)]
-#meta <- meta[PatientGroup %in% c("8", "1")]
+meta[grepl("HC", Status), group:="healthy"]
+meta[, "group" := factor(group, levels=c("healthy", "unhealthy"))]
 meta
 ```
 
@@ -25,7 +21,11 @@ Now we read in the food abundances and contents and select the relevant metadata
 foods <- fread("metacardis/data/food_abundance.csv")[sample_id %chin% meta$sample_id]
 contents <- fread("metacardis/data/food_content.csv")[sample_id %chin% meta$sample_id]
 meta <- meta[sample_id %chin% foods$sample_id]
-meta[, table(detailed_group)]
+meta[, table(Status)]
+```
+
+```{r}
+foods[, sum(reads), by="sample_id"][, summary(V1)]
 ```
 
 Nice, lets build up the phyloseq objects now. First, for the food abundance.
@@ -101,7 +101,7 @@ dev.off()
 ```
 
 ```{r, fig.width=10, fig.height=10}
-groups <- HeatmapAnnotation(group=sample_data(content_ps)$detailed_group, which="col", col=list(group=c(healthy="white", `obese w/o diabetes`="tomato", `eligible for bariatric surgery`="purple", `metabolic syndrome only`="orange")))
+groups <- HeatmapAnnotation(group=sample_data(content_ps)$Status, which="col", col=list(group=c(HC275="white", MMC269="orange", UMCC222="tomato")))
 anns <- unique(contents, by="id") |> setkey(id)
 com_groups <- HeatmapAnnotation(
   mass = anns[colnames(abund), monomer_mass],
@@ -128,7 +128,7 @@ library(ggplot2)
 theme_minimal() |> theme_set()
 
 macros <- meta[contents[source_type == "Nutrient"], on="sample_id", nomatch=0]
-macros <- dcast(macros, sample_id + group + detailed_group ~ name, value.var="abundance", fill=0, fun.aggregate=sum)
+macros <- dcast(macros, sample_id + group + Status ~ name, value.var="abundance", fill=0, fun.aggregate=sum)
 
 ggplot(macros) +
   aes(x=Proteins/1000, y=Carbohydrate/1000, color=Energy) +
@@ -150,11 +150,12 @@ config <- config_association(
   min_abundance = 10,
   independent_weighting = FALSE,
   shrink = F,
-  method="clr"
+  method="voom"
 )
-tests <- association(food_ps |> subset_samples(sample_sums(food_ps) > 0), config)
+tests <- association(food_ps, config)
 anns <- unique(foods[, .(wikipedia_id, species, matched_taxid, food_group, food_subgroup)])
 food_tests <- anns[tests, on="species"]
+food_tests[padj<0.05]
 ```
 
 ```{r}
@@ -165,7 +166,7 @@ config <- config_association(
   min_abundance = 10,
   independent_weighting = FALSE,
   shrink = F,
-  method="clr"
+  method="voom"
 )
 phylum_tests <- association(food_ps, config)
 phylum_tests
@@ -185,7 +186,7 @@ ggplot(food_tests[padj<0.05]) +
 ggsave("figures/sig_species.pdf", width=4, height=3)
 ```
 
-```{r, fig.width=3, fig.height=5}
+```{r, fig.width=3.5, fig.height=3.5}
 dt <- plot_counts(food_ps, variable="group", tax_level="phylum", zeros=T, normalized=F, only_data=T)
 dt[, "relative" := reads/sum(reads), by="sample"]
 
@@ -197,8 +198,8 @@ ggplot(dt[taxa %in% c("Streptophyta", "Chordata")]) +
   facet_wrap(~ taxa) +
   scale_y_log10() +
   theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1)) +
-  labs(x="metabolic status", y="reads + pc")
-ggsave("figures/metacardis_phyla.pdf", width=3.5, height=6)
+  labs(x="metabolic status", y="reads + 1")
+ggsave("figures/metacardis_phyla.pdf", width=3.5, height=3.5)
 ```
 
 Differential contents
@@ -225,7 +226,7 @@ com_tests <- anns[tests, on="id"]
 theme_minimal() |> theme_set()
 com_tests[, "se" := log2FoldChange/t]
 
-ggplot(com_tests[padj<0.01]) +
+ggplot(com_tests[padj<0.05]) +
   geom_vline(xintercept=0, linetype="dashed") +
   aes(x=log2FoldChange, xmin=log2FoldChange - se,
       xmax=log2FoldChange + se,
@@ -243,4 +244,31 @@ ggplot(dt) +
   geom_jitter(width=0.3, stroke=0, size=1) +
   stat_summary(fun.data=mean_sdl, geom="pointrange", shape=21, fill="white", fun.args=list(mult=1), col="tomato") +
   facet_wrap(~ taxa)
+```
+
+## Figure Data
+
+```{r}
+fig_data <- list(
+  `Fig. 5A` = foods,
+  `Fig. 5B` = macros,
+  `Fig. 5C` = food_tests,
+  `Fig. 5D` = dt[taxa %in% c("Streptophyta", "Chordata")],
+  `Fig. 5E` = com_tests
+)
+
+si_data <- list(
+  `Fig. S4` = contents
+)
+
+fwrite(meta, "figure_data/metacardis_metadata.csv")
+```
+
+And we write them.
+
+```{r}
+library(openxlsx)
+
+write.xlsx(fig_data, "figure_data/fig5.xlsx")
+write.xlsx(si_data, "figure_data/figS4.xlsx")
 ```
